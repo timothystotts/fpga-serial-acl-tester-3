@@ -28,7 +28,7 @@
 --        glitches on an external Interrupt line from an external Integrated
 --        Circuit.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //Timed Moore machine with timer control strategy #1
 //Part 1: Module header:--------------------------------------------------------
 module ext_interrupt_debouncer(

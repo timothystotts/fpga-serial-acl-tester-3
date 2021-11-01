@@ -26,7 +26,7 @@
 --
 -- \brief A simple pulser to generate palette values for \ref led_pwm_driver.sv .
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //D-FF based LED pulsing--------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module led_palette_pulser

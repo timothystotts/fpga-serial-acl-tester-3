@@ -30,7 +30,7 @@
 --        Digilent Inc with SPI bus communication and two GPIO level interrupts
 --        input from the PMOD ACL2.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //------------------------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module pmod_acl2_custom_driver

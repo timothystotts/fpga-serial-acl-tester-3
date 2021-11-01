@@ -29,7 +29,7 @@
 -- \brief This FSM is the full 4-button mutual-exclusive debouncer, level
 -- output, without embedded one-shot, with 1 millisecond debounce.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //Timed FSM---------------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module multi_input_debounce

@@ -28,7 +28,7 @@
 -- SPI operating in Mode 0, without Extended data transfer of more than the
 -- standard COPI and CIPO data signals.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //------------------------------------------------------------------------------
 //Multiple Recursive Moore Machines
 //Part 1: Module header:--------------------------------------------------------

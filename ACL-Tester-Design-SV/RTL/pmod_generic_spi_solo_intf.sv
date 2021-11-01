@@ -29,7 +29,7 @@
 -- Standard SPI operating in Mode 0, without Extended data transfer of more
 -- than the standard COPI and CIPO data signals.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //------------------------------------------------------------------------------
 interface pmod_generic_spi_solo_intf #(
 	parameter integer parm_tx_len_bits = 11,

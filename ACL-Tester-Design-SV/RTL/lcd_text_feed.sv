@@ -26,7 +26,7 @@
 --
 -- \brief A timed FSM to feed display updates to a two-line LCD.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //Recursive Moore Machine-------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module lcd_text_feed

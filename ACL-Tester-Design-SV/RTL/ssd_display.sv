@@ -27,7 +27,7 @@
 -- \brief A Seven Segment Display driver for a single Pmod SSD. The input is a
 -- 8-bit hexademical value which is display as hexadecimal on the Pmod SSD.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //------------------------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module two_digit_ssd_out

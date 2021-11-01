@@ -29,7 +29,7 @@
 --        implementing a custom single-mode operation of the PMOD CLS by
 --        Digilent Inc.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //------------------------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module pmod_cls_custom_driver

@@ -28,7 +28,7 @@
 -- clock enable. The clock and synchronous reset are kept the same; but the
 -- clock enable is further divided.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //------------------------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module clock_enable_divider

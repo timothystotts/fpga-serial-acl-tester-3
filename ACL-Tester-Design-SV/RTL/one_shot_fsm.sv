@@ -30,7 +30,7 @@
 -- Finite State Machines in Hardware: Theory and Design (with VHDL and
 -- SystemVerilog) by Volnei A. Pedroni.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //Regular FSM-------------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module one_shot_fsm

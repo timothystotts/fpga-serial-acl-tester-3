@@ -31,7 +31,7 @@
 -- mixing palette causes more mixing of brightness than color, except at the
 -- lower brightness levels.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //Generate loops for PWMs-------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module led_pwm_driver

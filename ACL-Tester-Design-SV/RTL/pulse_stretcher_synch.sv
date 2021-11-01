@@ -30,7 +30,7 @@
 -- the FSM of Figure 8.28a from the text Finite State Machines in Hardware:
 -- Theory and Design (with VHDL and SystemVerilog) by Volnei A. Pedroni..
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //Timed Moore machine with timer control strategy #1
 //Part 1: Module header:--------------------------------------------------------
 module pulse_stretcher_synch

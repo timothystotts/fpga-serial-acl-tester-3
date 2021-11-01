@@ -26,7 +26,7 @@
 --
 -- \brief A simple text byte feeder to the UART TX module.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //Recursive Moore Machine-------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module uart_tx_feed

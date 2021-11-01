@@ -26,7 +26,7 @@
 --
 -- \brief A package of definitions used by the SPI drivers.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //------------------------------------------------------------------------------
 package pmod_stand_spi_solo_pkg;
 	timeunit 1ns;

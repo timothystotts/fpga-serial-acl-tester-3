@@ -27,7 +27,7 @@
 -- \brief A threshold presets selector with a parameter input of the
 -- configuration values.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2017"
+`begin_keywords "1800-2009"
 //------------------------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module thresh_presets_selector
