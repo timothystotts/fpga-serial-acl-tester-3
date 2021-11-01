@@ -24,7 +24,7 @@
 
 ## This file is a synthesis and implementation .xdc for the Arty A7-100 Rev. D, specific to the ACL2 Tester clocking.
 ## WARNING:
-## Note that all inputs and output delays are ballpark values and are not representative
+## Note that all input and output delays are ballpark values and are not representative
 ## of a thorough examination of the board layout design. A fully proper configuration
 ## would require use of advanced tools to examine and simulate the board trace delays
 ## by export of a IBIS file from Vivado and import of that file into an advanced
