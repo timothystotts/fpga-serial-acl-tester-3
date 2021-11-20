@@ -1,3 +1,5 @@
+ACL-Tester-Design-SV
+
 Verified on Arty-A7-100 hardware on 2021-11-19, #2.
 
 Index 0 for the threashold presets doesn't always work. But 1 through 4
