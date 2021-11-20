@@ -208,7 +208,7 @@ set_input_delay -clock $input_clock -min [expr $tco_min + $trce_dly_min] [get_po
 #                        __    __
 # data   XXXXXXXXXXXXXXXX__DATA__XXXXXXXXXXXXX
 #
-set destination_clock VIRTUAL_clk100hz_ssd; # Name of destination clock
+set destination_clock wiz_20mhz_virt_out; # Name of destination clock
 set tsu               5.600;           # Destination device setup time requirement
 set thd               0.900;            # Destination device hold time requirement
 set trce_dly_max      0.400;            # Maximum board trace delay
