@@ -85,7 +85,7 @@ standard terminology in engineering is a priority.
 
 [Serial ACL Readings Tester info](https://github.com/timothystotts/fpga-serial-acl-tester-3/blob/main/Serial%20ACL%20Readings%20Tester%20-%20Refreshed.pdf)
 
-### Diagrams design document:
+### Diagrams design document (only the HDL designs):
 
 ./ACL-Tester-Design-Documents/ACL-Tester-Design-Diagrams.pdf
 
