@@ -6,13 +6,17 @@ by Timothy Stotts
 
 ## Description
 A small FPGA project of different implementations for testing Measurement and Activity Events of a SPI accelerometer.
-The design targets the Digilent Inc. Arty-A7-100T FPGA development board containing a Xilinx Artix-7 FPGA.
+The Xilinx MicroBlaze design and the three HDL designs targets the
+Digilent Inc. Arty-A7-100 FPGA development board containing a Xilinx Artix-7 FPGA.
+Three peripherals are used: Digilent Inc. Pmod ACL2, Digilent Inc. Pmod CLS., Digilent Inc. Pmod SSD.
+The Xilinx Zynq design targets the
+Digilent Inc. Zybo-Z7-20 FPGA development board containing a Xilinx Zynq-7000 APSoC.
 Three peripherals are used: Digilent Inc. Pmod ACL2, Digilent Inc. Pmod CLS., Digilent Inc. Pmod SSD.
 
 The design is broken into five groupings. 
-he first four groups target the Digilent Inc. Arty-A7-100 development board.
+The first four groups target the Digilent Inc. Arty-A7-100 development board.
 The last group targets the Digilent Inc. Zybo-Z7-20 development board.
-The projects are likely portable to the Arty-A7-35 and Zybo-Z7-10 respectively
+The projects are likely portable to the smaller Arty-A7-35 and Zybo-Z7-10 respectively
 as the designs are low resource utilization.
 
 The folder ACL-Tester-Design-MB contains a Xilinx Vivado IP Integrator plus
