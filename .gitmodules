@@ -6,3 +6,6 @@
 	path = ACL-Tester-Design-Zynq/IP/vivado-library
 	url = https://github.com/timothystotts/vivado-library.git
 	branch = zybo-z7-20-vivado-2021.2
+[submodule "ACL-Tester-Design-VHDL/OSVVM/OsvvmLibraries"]
+	path = ACL-Tester-Design-VHDL/OSVVM/OsvvmLibraries
+	url = https://github.com/OSVVM/OsvvmLibraries.git
