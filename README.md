@@ -1,6 +1,7 @@
-# fpga-serial-acl-tester-1
+# fpga-serial-acl-tester-3
 
 FPGA Serial ACL Tester Version 3
+
 by Timothy Stotts
 
 
