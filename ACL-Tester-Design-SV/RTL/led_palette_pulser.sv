@@ -48,7 +48,7 @@ module led_palette_pulser
 		output logic [c_color_value_upper:0] o_color_led_red_value,
 		output logic [c_color_value_upper:0] o_color_led_green_value,
 		output logic [c_color_value_upper:0] o_color_led_blue_value,
-		output logic [c_color_value_upper:0] o_basic_led_lumin_value,
+		output logic [c_basic_value_upper:0] o_basic_led_lumin_value,
 		// system statuses to adjust LEDs by
 		input logic i_active_init_display,
 		input logic i_active_run_display,
@@ -126,9 +126,16 @@ clock_enable_divider #(
    the status register Activity and Inactivity. Also displayed on LED 4
    is the AWAKE state of the PMOD ACL2; and on LED 6,7 the Switch 0
    and Switch 1 debounced positions. */
-assign o_color_led_red_value = {s_ld3_red_value, s_ld2_red_value, s_ld1_red_value, s_ld0_red_value};
-assign o_color_led_green_value = {s_ld3_green_value, s_ld2_green_value, s_ld1_green_value, s_ld0_green_value};
-assign o_color_led_blue_value = {s_ld3_blue_value, s_ld2_blue_value, s_ld1_blue_value, s_ld0_blue_value};
+if (parm_color_led_count == 2) begin
+	assign o_color_led_red_value = {s_ld3_red_value, s_ld2_red_value};
+	assign o_color_led_green_value = {s_ld3_green_value, s_ld2_green_value};
+	assign o_color_led_blue_value = {s_ld3_blue_value, s_ld2_blue_value};
+end else begin
+	assign o_color_led_red_value = {s_ld3_red_value, s_ld2_red_value, s_ld1_red_value, s_ld0_red_value};
+	assign o_color_led_green_value = {s_ld3_green_value, s_ld2_green_value, s_ld1_green_value, s_ld0_green_value};
+	assign o_color_led_blue_value = {s_ld3_blue_value, s_ld2_blue_value, s_ld1_blue_value, s_ld0_blue_value};
+end
+
 assign o_basic_led_lumin_value = {s_ld7_basic_value, s_ld6_basic_value, s_ld5_basic_value, s_ld4_basic_value};
 
 assign s_ld0_red_value = {s_ld0_red_pulse, 2'b11};
