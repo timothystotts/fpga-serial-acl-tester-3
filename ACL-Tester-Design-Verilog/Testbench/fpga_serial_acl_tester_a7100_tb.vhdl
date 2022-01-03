@@ -1,5 +1,28 @@
 --------------------------------------------------------------------------------
--- \file fpga_serial_acl_tester_tb.vhdl
+-- MIT License
+--
+-- Copyright (c) 2020-2022 Timothy Stotts
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+--
+-- The above copyright notice and this permission notice shall be included in
+-- all copies or substantial portions of the Software.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-- SOFTWARE.
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- \file fpga_serial_acl_tester_a7100_tb.vhdl
 --
 -- \brief Accelerometer control and reading, testbench.
 --------------------------------------------------------------------------------
@@ -9,11 +32,11 @@ use ieee.numeric_std.all;
 
 library work;
 --------------------------------------------------------------------------------
-entity fpga_serial_acl_tester_tb is
-end entity fpga_serial_acl_tester_tb;
+entity fpga_serial_acl_tester_a7100_tb is
+end entity fpga_serial_acl_tester_a7100_tb;
 --------------------------------------------------------------------------------
-architecture simultation of fpga_serial_acl_tester_tb is
-	component fpga_serial_acl_tester is
+architecture simultation of fpga_serial_acl_tester_a7100_tb is
+	component fpga_serial_acl_tester_a7100 is
 		generic (
 			parm_fast_simulation : integer := 0);
 		port (
@@ -60,7 +83,7 @@ architecture simultation of fpga_serial_acl_tester_tb is
 
 			eo_ssd_pmod0 : out std_logic_vector(7 downto 0)
 		);
-	end component fpga_serial_acl_tester;
+	end component fpga_serial_acl_tester_a7100;
 
 	constant c_clock_half_period : time := 5 ns;
 	signal run_clock             : boolean;
@@ -103,7 +126,7 @@ architecture simultation of fpga_serial_acl_tester_tb is
 
 begin
 	-- Unit Under Test: ACL2 Experiment
-	uut_fpga_serial_acl_tester : fpga_serial_acl_tester
+	uut_fpga_serial_acl_tester_a7100 : fpga_serial_acl_tester_a7100
 		generic map (
 			parm_fast_simulation => 1)
 		port map (

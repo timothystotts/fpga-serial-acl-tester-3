@@ -22,7 +22,7 @@
 ## SOFTWARE.
 ##------------------------------------------------------------------------------
 
-## This file is a synthesis and implementation .xdc for the Arty A7-100 Rev. D, specific to the ACL2 Tester clocking.
+## This file is a general .xdc for the Arty S7-25 Rev. E, specific to the ACL2 Tester clocking.
 ## WARNING:
 ## Note that all input and output delays are ballpark values and are not representative
 ## of a thorough examination of the board layout design. A fully proper configuration
@@ -30,8 +30,8 @@
 ## by export of a IBIS file from Vivado and import of that file into an advanced
 ## board layout design tool.
 
-# The main input clock, 100 MHz
-create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} -add [get_ports CLK100MHZ]
+# The main input clock, 12 MHz
+create_clock -add -name sys_clk_pin -period 83.333 -waveform {0 41.667} [get_ports { CLK12MHZ }];
 
 # The following are generated clocks as implemented by clock divider components.
 # The syntax of the TCL command requires specification of either a port or a pin
@@ -58,12 +58,12 @@ create_generated_clock -name clk100hz_ssd -source [get_pins u_one_pmod_ssd_displ
 # XILINX XDC constraints.
 create_clock -period 50.000 -name wiz_20mhz_virt_in -waveform {0.000 25.000}
 create_clock -period 50.000 -name wiz_20mhz_virt_out -waveform {0.000 25.000}
-create_clock -period 135.640 -name wiz_7_373mhz_virt_in -waveform {0.000 67.820}
-create_clock -period 135.640 -name wiz_7_373mhz_virt_out -waveform {0.000 67.820}
-# The clock clk100hz_ssd has a floating-point or rounding error; therefore, to
-# match the generated clock waveform, the half-waveform ends at 50000.004 ns instead
-# of 50000.000 ns.
-create_clock -period 100000.000 -name VIRTUAL_clk100hz_ssd -waveform {0.000 50000.004}
+create_clock -period 135.947 -name wiz_7_373mhz_virt_in -waveform {0.000 67.974}
+create_clock -period 135.947 -name wiz_7_373mhz_virt_out -waveform {0.000 67.974}
+# The clock clk100hz_ssd has a floating-point or rounding error; or imprecision in the
+# MMCM. Therefore, to match the generated clock waveform, the half-waveform ends
+# at 49999.797 ns instead of 50000.000 ns.
+create_clock -period 99999.594 -name VIRTUAL_clk100hz_ssd -waveform {0.000 49999.797}
 
 # The following are scaled input and output delays of the top-level ports of the design.
 # The waveform that was calculated for determining the input and output delays as
@@ -126,13 +126,45 @@ set tsu               5.600;            # Destination device setup time requirem
 set thd               0.900;            # Destination device hold time requirement
 set trce_dly_max      0.400;            # Maximum board trace delay
 set trce_dly_min      0.200;            # Minimum board trace delay
-set output_ports      {eo_led0_b eo_led0_g eo_led0_r eo_led1_b eo_led1_g eo_led1_r eo_led2_b eo_led2_g eo_led2_r eo_led3_b eo_led3_g eo_led3_r eo_led4 eo_led5 eo_led6 eo_led7};   # List of output ports
+set output_ports      {eo_led0_b eo_led0_g eo_led0_r eo_led1_b eo_led1_g eo_led1_r eo_led2 eo_led3 eo_led4 eo_led5};   # List of output ports
 
 # Output Delay Constraint
 set_output_delay -clock $destination_clock -max [expr $trce_dly_max + $tsu] [get_ports $output_ports];
 set_output_delay -clock $destination_clock -min [expr $trce_dly_min - $thd] [get_ports $output_ports];
 
-## Pmod Header JA
+## Pmod Header JA - inputs
+## The inputs of PMOD ACL2 are all synchronized into the design at the 20 MHz MMCM clock.
+## A virtual clock is used to allow the tool to automatically compute jitter and other metrics.
+#
+# Rising Edge System Synchronous Inputs
+#
+# A Single Data Rate (SDR) System Synchronous interface is
+# an interface where the external device and the FPGA use
+# the same clock, and a new data is captured one clock cycle
+# after being launched
+#
+# input      __________            __________
+# clock   __|          |__________|          |__
+#           |
+#           |------> (tco_min+trce_dly_min)
+#           |------------> (tco_max+trce_dly_max)
+#         __________      ________________    
+# data    __________XXXXXX_____ Data _____XXXXXXX
+#
+set input_clock     wiz_20mhz_virt_in;   # Name of input clock
+set tco_max         30.000;          # Maximum clock to out delay (external device)
+set tco_min         20.000;          # Minimum clock to out delay (external device)
+set trce_dly_max    0.400;          # Maximum board trace delay
+set trce_dly_min    0.200;          # Minimum board trace delay
+set input_ports     {ei_pmod_acl2_cipo ei_pmod_acl2_int1 ei_pmod_acl2_int2};  # List of input ports
+
+# Input Delay Constraint
+set_input_delay -clock $input_clock -max [expr $tco_max + $trce_dly_max] [get_ports $input_ports];
+set_input_delay -clock $input_clock -min [expr $tco_min + $trce_dly_min] [get_ports $input_ports];
+
+## Pmod Header JA - outputs
+## The output of PMOD ACL2 at SPI is synchronized out of the design at the MMCM 20 MHz clock.
+## A virtual clock is used to allow the tool to automatically compute jitter and other metrics.
 # Rising Edge System Synchronous Outputs 
 #
 # A System Synchronous design interface is a clocking technique in which the same 
@@ -146,12 +178,13 @@ set_output_delay -clock $destination_clock -min [expr $trce_dly_min - $thd] [get
 #                        __    __
 # data   XXXXXXXXXXXXXXXX__DATA__XXXXXXXXXXXXX
 #
-set destination_clock VIRTUAL_clk100hz_ssd; # Name of destination clock
-set tsu               23.600;           # Destination device setup time requirement
-set thd               3.000;            # Destination device hold time requirement
+
+set destination_clock wiz_20mhz_virt_out;     # Name of destination clock
+set tsu               5.600;            # Destination device setup time requirement
+set thd               0.900;            # Destination device hold time requirement
 set trce_dly_max      0.400;            # Maximum board trace delay
 set trce_dly_min      0.200;            # Minimum board trace delay
-set output_ports      {eo_ssd_pmod0[*]};   # List of output ports
+set output_ports      {eo_pmod_acl2_copi eo_pmod_acl2_csn eo_pmod_acl2_sck};   # List of output ports
 
 # Output Delay Constraint
 set_output_delay -clock $destination_clock -max [expr $trce_dly_max + $tsu] [get_ports $output_ports];
@@ -216,39 +249,10 @@ set output_ports      {eo_pmod_cls_csn eo_pmod_cls_dq0 eo_pmod_cls_sck};   # Lis
 set_output_delay -clock $destination_clock -max [expr $trce_dly_max + $tsu] [get_ports $output_ports];
 set_output_delay -clock $destination_clock -min [expr $trce_dly_min - $thd] [get_ports $output_ports];
 
-## Pmod Header JC - inputs
-## The inputs of PMOD ACL2 are all synchronized into the design at the 20 MHz MMCM clock.
-## A virtual clock is used to allow the tool to automatically compute jitter and other metrics.
+## Pmod Header JC - unused
 #
-# Rising Edge System Synchronous Inputs
-#
-# A Single Data Rate (SDR) System Synchronous interface is
-# an interface where the external device and the FPGA use
-# the same clock, and a new data is captured one clock cycle
-# after being launched
-#
-# input      __________            __________
-# clock   __|          |__________|          |__
-#           |
-#           |------> (tco_min+trce_dly_min)
-#           |------------> (tco_max+trce_dly_max)
-#         __________      ________________    
-# data    __________XXXXXX_____ Data _____XXXXXXX
-#
-set input_clock     wiz_20mhz_virt_in;   # Name of input clock
-set tco_max         30.000;          # Maximum clock to out delay (external device)
-set tco_min         20.000;          # Minimum clock to out delay (external device)
-set trce_dly_max    0.400;          # Maximum board trace delay
-set trce_dly_min    0.200;          # Minimum board trace delay
-set input_ports     {ei_pmod_acl2_cipo ei_pmod_acl2_int1 ei_pmod_acl2_int2};  # List of input ports
 
-# Input Delay Constraint
-set_input_delay -clock $input_clock -max [expr $tco_max + $trce_dly_max] [get_ports $input_ports];
-set_input_delay -clock $input_clock -min [expr $tco_min + $trce_dly_min] [get_ports $input_ports];
-
-## Pmod Header JC - outputs
-## The output of PMOD ACL2 at SPI is synchronized out of the design at the MMCM 20 MHz clock.
-## A virtual clock is used to allow the tool to automatically compute jitter and other metrics.
+## Pmod Header JD
 # Rising Edge System Synchronous Outputs 
 #
 # A System Synchronous design interface is a clocking technique in which the same 
@@ -262,20 +266,16 @@ set_input_delay -clock $input_clock -min [expr $tco_min + $trce_dly_min] [get_po
 #                        __    __
 # data   XXXXXXXXXXXXXXXX__DATA__XXXXXXXXXXXXX
 #
-
-set destination_clock wiz_20mhz_virt_out;     # Name of destination clock
-set tsu               5.600;            # Destination device setup time requirement
-set thd               0.900;            # Destination device hold time requirement
+set destination_clock VIRTUAL_clk100hz_ssd; # Name of destination clock
+set tsu               23.600;           # Destination device setup time requirement
+set thd               3.000;            # Destination device hold time requirement
 set trce_dly_max      0.400;            # Maximum board trace delay
 set trce_dly_min      0.200;            # Minimum board trace delay
-set output_ports      {eo_pmod_acl2_copi eo_pmod_acl2_csn eo_pmod_acl2_sck};   # List of output ports
+set output_ports      {eo_ssd_pmod0[*]};   # List of output ports
 
 # Output Delay Constraint
 set_output_delay -clock $destination_clock -max [expr $trce_dly_max + $tsu] [get_ports $output_ports];
 set_output_delay -clock $destination_clock -min [expr $trce_dly_min - $thd] [get_ports $output_ports];
-
-## Pmod Header JD
-## This jack is unused for this project's RTL design.
 
 ## USB-UART Interface
 ## The input of UART is disconnected, but would be sampled at
@@ -310,18 +310,6 @@ set_output_delay -clock $destination_clock -min [expr $trce_dly_min - $thd] [get
 #set_input_delay -clock [get_clocks wiz_7_373mhz_virt_in] -max 54.253 [get_ports {ei_uart_rx}];
 #set_input_delay -clock [get_clocks wiz_7_373mhz_virt_in] -min 13.563 [get_ports {ei_uart_rx}];
 
-## ChipKit Outer Digital Header
-## This jack is unused for this project's RTL design.
-
-## ChipKit Inner Digital Header
-## This jack is unused for this project's RTL design.
-
-## ChipKit SPI
-## This jack is unused for this project's RTL design.
-
-## ChipKit I2C
-## This jack is unused for this project's RTL design.
-
 ## Misc. ChipKit Ports
 # The input delay is ignored for port i_resetn as it later set as a false path.
 # However, to turn off thw input delay warning, the input delay is still set here.
@@ -329,14 +317,5 @@ set_input_delay -clock [get_clocks wiz_20mhz_virt_in] -min -add_delay 20.200 [ge
 set_input_delay -clock [get_clocks wiz_20mhz_virt_in] -max -add_delay 30.400 [get_ports i_resetn]
 set_false_path -from [get_ports i_resetn] -to [all_registers]
 
-## SMSC Ethernet PHY
-## This port is unused for this project's RTL design.
-
-## Quad SPI Flash
-## This port is unused for this project's RTL design.
-
-## Power Measurements
-## This port is unused for this project's RTL design.
-
 ## Internal asynchronous items requiring false_path
-set_false_path -to [get_pins u_uart_tx_only/u_fifo_uart_tx_0/genblk5_0.fifo_18_bl.fifo_18_bl/RST]
+set_false_path -to [get_pins u_uart_tx_only/u_fifo_uart_tx_0/bl.fifo_18_inst_bl.fifo_18_bl/RST]

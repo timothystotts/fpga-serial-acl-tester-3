@@ -127,9 +127,20 @@ begin
 	-- the status register Activity and Inactivity. Also displayed on LED 4
 	-- is the AWAKE state of the PMOD ACL2; and on LED 6,7 the Switch 0
 	-- and Switch 1 debounced positions.
-	o_color_led_red_value   <= (s_ld3_red_value, s_ld2_red_value, s_ld1_red_value, s_ld0_red_value);
-	o_color_led_green_value <= (s_ld3_green_value, s_ld2_green_value, s_ld1_green_value, s_ld0_green_value);
-	o_color_led_blue_value  <= (s_ld3_blue_value, s_ld2_blue_value, s_ld1_blue_value, s_ld0_blue_value);
+	g_led_out_color_2 : if (parm_color_led_count = 2) generate
+	begin
+		o_color_led_red_value   <= (s_ld3_red_value, s_ld2_red_value);
+		o_color_led_green_value <= (s_ld3_green_value, s_ld2_green_value);
+		o_color_led_blue_value  <= (s_ld3_blue_value, s_ld2_blue_value);
+	end generate g_led_out_color_2;
+
+	g_led_out_color_4 : if (parm_color_led_count /= 2) generate
+	begin
+		o_color_led_red_value   <= (s_ld3_red_value, s_ld2_red_value, s_ld1_red_value, s_ld0_red_value);
+		o_color_led_green_value <= (s_ld3_green_value, s_ld2_green_value, s_ld1_green_value, s_ld0_green_value);
+		o_color_led_blue_value  <= (s_ld3_blue_value, s_ld2_blue_value, s_ld1_blue_value, s_ld0_blue_value);
+	end generate g_led_out_color_4;
+
 	o_basic_led_lumin_value <= (s_ld7_basic_value, s_ld6_basic_value, s_ld5_basic_value, s_ld4_basic_value);
 
 	s_ld0_red_value   <= std_logic_vector(s_ld0_red_pulse) & "11";

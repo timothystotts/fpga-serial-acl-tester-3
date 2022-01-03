@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020-2021 Timothy Stotts
+-- Copyright (c) 2020-2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,11 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 -- SOFTWARE.
 --------------------------------------------------------------------------------
--- \file fpga_serial_acl_tester.vhdl
+-- \file fpga_serial_acl_tester_a7100.vhdl
 --
 -- \brief A FPGA top-level design with the PMOD ACL2 custom driver.
+-- The target board is the Digilent Inc. Arty-A7-100 with a
+-- Xilinx Artix-7 100T part.
 -- This tester operates the ADXL362 in one of multiple possible operational
 -- modes for Accelerometer data capture. The PMOD CLS is used to display raw
 -- data for: X-Axis, Y-Axis, Z-Axis, Temperature. Color and basic LEDs
@@ -44,7 +46,7 @@ library work;
 use work.pmod_stand_spi_solo_pkg.all;
 use work.led_pwm_driver_pkg.t_led_color_values;
 --------------------------------------------------------------------------------
-entity fpga_serial_acl_tester is
+entity fpga_serial_acl_tester_a7100 is
 	generic(
 		-- Disable or enable fast FSM delays for simulation instead of impelementation.
 		parm_fast_simulation : integer := 0);
@@ -100,11 +102,11 @@ entity fpga_serial_acl_tester is
 		-- PMOD SSD direct GPIO
 		eo_ssd_pmod0 : out std_logic_vector(7 downto 0)
 	);
-end entity fpga_serial_acl_tester;
+end entity fpga_serial_acl_tester_a7100;
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
-architecture rtl of fpga_serial_acl_tester is
+architecture rtl of fpga_serial_acl_tester_a7100 is
 
 	-- Main clock frequency in Hz
 	constant c_FCLK : natural := 20_000_000;
