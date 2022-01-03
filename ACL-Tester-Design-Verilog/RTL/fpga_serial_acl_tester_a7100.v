@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020 Timothy Stotts
+-- Copyright (c) 2020-2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,11 @@
 -- SOFTWARE.
 ------------------------------------------------------------------------------*/
 /**-----------------------------------------------------------------------------
--- \file fpga_serial_acl_tester.v
+-- \file fpga_serial_acl_tester_a7100.v
 --
 -- \brief A FPGA top-level design with the PMOD ACL2 custom driver.
+-- The target board is the Digilent Inc. Arty-A7-100 with a
+-- Xilinx Artix-7 100T part.
 -- This design operates the ADXL362 in one of multiple possible operational
 -- modes for Accelerometer data capture. The PMOD CLS is used to display raw
 -- data for: X-Axis, Y-Axis, Z-Axis, Temperature. Color and basic LEDs
@@ -34,7 +36,7 @@
 //------------------------------------------------------------------------------
 //Multiple Moore Machines
 //Part 1: Module header:--------------------------------------------------------
-module fpga_serial_acl_tester (
+module fpga_serial_acl_tester_a7100 (
 	/* external clock and active-low reset */
 	CLK100MHZ, i_resetn,
 	/* PMOD ACL2 SPI bus 4-wire and two interrupt signals */
