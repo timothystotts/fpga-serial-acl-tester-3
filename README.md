@@ -7,22 +7,23 @@ by Timothy Stotts
 
 ## Description
 A small FPGA project of different implementations for testing Measurement and Activity Events of a SPI accelerometer.
-The Xilinx MicroBlaze design and the three HDL designs targets the
+The Xilinx MicroBlaze design targets the
 Digilent Inc. Arty-A7-100 FPGA development board containing a Xilinx Artix-7 FPGA.
 Three peripherals are used: Digilent Inc. Pmod ACL2, Digilent Inc. Pmod CLS., Digilent Inc. Pmod SSD.
 The Xilinx Zynq design targets the
 Digilent Inc. Zybo-Z7-20 FPGA development board containing a Xilinx Zynq-7000 APSoC.
 Three peripherals are used: Digilent Inc. Pmod ACL2, Digilent Inc. Pmod CLS., Digilent Inc. Pmod SSD.
+The three HDL designs can target either the Digilent Inc. Arty-S7-25 or
+the Digilent Inc. Arty-A7-100.
+Three peripherals are used: Digilent Inc. Pmod ACL2, Digilent Inc. Pmod CLS., Digilent Inc. Pmod SSD.
 
-The design is broken into five groupings. 
-The first four groups target the Digilent Inc. Arty-A7-100 development board.
-The last group targets the Digilent Inc. Zybo-Z7-20 development board.
-The projects are likely portable to the smaller Arty-A7-35 and Zybo-Z7-10 respectively
-as the designs are low resource utilization.
+The HDL projects can target the Digilent Inc. Arty-S7-25, as an example for a lower cost FPGA board.
+Also, the HDL, MicroBlaze, and Zynq projects are likely portable to the smaller Arty-A7-35 and Zybo-Z7-10
+respectively as the designs are low resource utilization.
 
 The folder ACL-Tester-Design-MB contains a Xilinx Vivado IP Integrator plus
 Xilinx Vitis design.
-A microblaze soft CPU is instantiated to talk with board components,
+A MicroBlaze soft CPU is instantiated to talk with board components,
 an accelerometer peripheral,
 a 16x2 character LCD peripheral,
 and a two-digit Seven Segment Display.
