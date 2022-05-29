@@ -1,0 +1,10 @@
+*.xdc
+*_stub.v*
+*_sim_netlist.v*
+*.dcp
+sim/
+synth/
+
+hw_handoff/
+ipshared/
+system/
