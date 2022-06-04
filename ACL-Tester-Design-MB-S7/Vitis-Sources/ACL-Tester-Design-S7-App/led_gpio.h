@@ -1,7 +1,7 @@
-/**-----------------------------------------------------------------------------
+/*------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020 Timothy Stotts
+-- Copyright (c) 2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -22,70 +22,69 @@
 -- SOFTWARE.
 ------------------------------------------------------------------------------*/
 /**-----------------------------------------------------------------------------
- * @file led_pwm.h
+ * @file led_gpio.h
  *
- * @brief
- * LED control API for controlling FPGA-connected LEDs of the Arty A7
- * FPGA prototyping board by Digilent Inc by interfacing them with the
- * Digilent PWM_2.0 IP block.
+ * @brief A simple driver to control the states of both color and basic LEDs
+ * via GPIO pins that causes either 0% or 100% brightness. No PWM is used.
  *
  * @author
  * Timothy Stotts (timothystotts08@gmail.com)
  *
  * @copyright
- * (c) 2020 Copyright Timothy Stotts
+ * (c) 2022 Copyright Timothy Stotts
  *
  * This program is free software; distributed under the terms of the MIT
  * License.
 ------------------------------------------------------------------------------*/
 
-#ifndef _SRC_LED_PWM_H_
-#define _SRC_LED_PWM_H_
+#ifndef _SRC_LED_GPIO
+#define _SRC_LED_GPIO
 
 #include "xil_types.h"
 
-#define PWM_PERIOD_TEN_MILLISECOND ((u32)500000)
-#define PWM_DUTY_CYCLE_NINE_MILLISECOND ((u32)500000 * 9 / 10)
-#define PWM_DUTY_CYCLE_EIGHT_MILLISECOND ((u32)500000 * 8 / 10)
-#define PWM_DUTY_CYCLE_SEVEN_MILLISECOND ((u32)500000 * 7 / 10)
+/**-----------------------------------------------------------------------------
+ * @brief
+ * The number of color LED emitters driven by the gpio driver.
+ */
+#define N_COLOR_LEDS ((int) 6)
 
-typedef struct COLOR_PWM_TAG {
-	u32 baseAddr;
-	u32 pwmPeriod;
-} t_color_pwm_constants;
+/**-----------------------------------------------------------------------------
+ * @brief
+ * The number of basic LED emitters driven by the gpio driver.
+ */
+#define N_BASIC_LEDS ((int) 4)
 
 typedef struct COLOR_LED_TAG {
-	u32 baseAddr; /* The base address of the PWM module that controls this filament. */
-	u32 pwmIndex;
-	u32 maxDutyCycle;
+	u32 gpioChannel; // The channel of the GPIO driver managing color lEDs
+	u32 gpioIndex; // The bitmask index for this LED
 	char filamentColor;
 	u8 silkLedIndex;
 } t_color_led_constants;
 
 typedef struct RGB_LED_TAG {
-	u8 paletteRed;
-	u8 paletteGreen;
-	u8 paletteBlue;
-} t_rgb_led_palette;
+	u8 eanbleRed;
+	u8 enableGreen;
+	u8 enableBlue;
+} t_rgb_led_enable;
 
 typedef struct RGB_LED_SILK_TAG {
-	t_rgb_led_palette rgb;
+	t_rgb_led_enable rgb;
 	u8 ledSilk;
-} t_rgb_led_palette_silk;
-
-typedef t_color_pwm_constants t_basic_pwm_constants;
+} t_rgb_led_enable_silk;
 
 typedef struct BASIC_LED_TAG {
-	u32 baseAddr;
-	u32 pwmIndex;
-	u32 maxDutyCycle;
+	u32 gpioChannel; // The channel of the GPIO driver maanging basic LEDs
+	u32 gpioIndex; // The bitmask index for this LED
 	u8 silkLedIndex;
 } t_basic_led_constants;
 
+void InitLedsGpio(void);
+void InitColorLedsOff(void);
+void InitBasicLedsOff(void);
 void InitAllLedsOff(void);
-int SetColorLedPercent(const u8 ledSilk, const char color, const u32 percentFixPt);
-int SetBasicLedPercent(const u8 ledSilk, const u32 percentFixPt);
-//int WaitLedPeriodTimerTick(const u32 elapsed, const u32 waitLoad, u32* waitTimer);
-int SetRgbPaletteLed(const u8 ledSilk, const t_rgb_led_palette* palette);
+int SetColorLedState(const u8 ledSilk, const char color, const bool emitterOn);
+int SetBasicLedState(const u8 ledSilk, const bool emitterOn);
 
-#endif /* _SRC_LED_PWM_H_ */
+
+#endif // _SRC_LED_GPIO
+

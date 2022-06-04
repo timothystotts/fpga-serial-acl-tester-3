@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020 Timothy Stotts
+-- Copyright (c) 2020-2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@
  * Timothy Stotts (timothystotts08@gmail.com)
  *
  * @copyright
- * (c) 2020 Copyright Timothy Stotts
+ * (c) 2020-2022 Copyright Timothy Stotts
  *
  * This program is free software; distributed under the terms of the MIT
  * License.
@@ -53,25 +53,23 @@
 #include "xintc.h"
 #include "xgpio.h"
 /* Project includes. */
+#include "led_gpio.h"
 #include "thresh_presets_include.h"
 #include "MuxSSD.h"
 #include "PmodACL2custom.h"
-#include "PWM.h"
-#include "led_pwm.h"
 #include "Experiment.h"
 
 /* Queue Handles declared in main. */
 extern QueueHandle_t xQueuePrint;
-extern QueueHandle_t xQueueLedConfig;
 extern QueueHandle_t xQueueClsDispl;
 
 /* ACL2 experiment constants */
 #define ACL2_CONFIGURED 1
 #define ACL2_NOTCONFIGURED 0
 #define ACL2_NEVERCONFIGURED 2
-#define ACTIVE_LED_IDX 2
-#define INACTIVE_LED_IDX 3
-#define AWAKE_LED_IDX 4
+#define ACTIVE_LED_IDX 0
+#define INACTIVE_LED_IDX 1
+#define AWAKE_LED_IDX 2
 #define USERIO_DEVICE_ID 0
 #define SWTCHS_SWS_MASK 0x0F
 #define SWTCH_SW_CHANNEL 1
@@ -93,10 +91,8 @@ extern QueueHandle_t xQueueClsDispl;
 /*------------------ Module Type Definitions ----------------*/
 typedef struct EXPERIMENT_DATA_TAG {
 	/* Driver objects */
-	XGpio axGpio;
+	XGpio inputsGpio;
 	PmodACL2c acl2Device;
-	/* LED driver palettes stored */
-	t_rgb_led_palette_silk ledUpdate[8];
 	/* Print QUEUE string line exchange */
 	char comString[PRINTF_BUF_SZ];
 	/* CLS QUEUE string lines exchange */
@@ -130,12 +126,7 @@ static const uint32_t cnt_t_max = 40 * 3;
 
 /*------------------ Private Module Functions Prototypes ----*/
 static void Experiment_InitData(t_experiment_data* expData);
-static void Experiment_SetLedUpdate(t_experiment_data* expData,
-		uint8_t silk, uint8_t red, uint8_t green, uint8_t blue);
-static void Experiment_SendLedUpdate(t_experiment_data* expData,
-		uint8_t silk);
 static void Experiment_updateLedsStatuses(t_experiment_data* expData);
-static void Experiment_updateLedsDisplayMode(t_experiment_data* expData);
 static void Experiment_updateLedsEvents(t_experiment_data* expData);
 static void Experiment_timeEvent(u8* count);
 static bool Experiment_generateTextLines(t_experiment_data* expData);
@@ -153,19 +144,21 @@ void Experiment_prvAcl2Task( void *pvParameters )
 	const TickType_t x50millisecond = pdMS_TO_TICKS( (DELAY_1_SECOND / 20) - (DELAY_1_SECOND / 1000) );
 
 	Experiment_InitData(&experiData);
+	InitLedsGpio();
+	InitAllLedsOff();
 
 	/* Initialize the ACL2 driver */
 	ACL2c_begin(&(experiData.acl2Device), XPAR_PMODACL2_0_AXI_LITE_GPIO_BASEADDR,
 		 XPAR_PMODACL2_0_AXI_LITE_SPI_BASEADDR);
 
 	/* Initialize the GPIO device for inputting switches 0,1,2,3 and buttons 0,1,2,3.
-	 * This corresponds to the two channels set in the single AXI GPIO driver of
+	 * This corresponds to the two channels set in the index zero AXI GPIO driver of
 	 * the FPGA system block design. */
 	taskENTER_CRITICAL();
-	XGpio_Initialize(&(experiData.axGpio), USERIO_DEVICE_ID);
-	XGpio_SelfTest(&(experiData.axGpio));
-	XGpio_SetDataDirection(&(experiData.axGpio), SWTCH_SW_CHANNEL, SWTCHS_SWS_MASK);
-	XGpio_SetDataDirection(&(experiData.axGpio), BTNS_SW_CHANNEL, BTNS_SWS_MASK);
+	XGpio_Initialize(&(experiData.inputsGpio), USERIO_DEVICE_ID);
+	XGpio_SelfTest(&(experiData.inputsGpio));
+	XGpio_SetDataDirection(&(experiData.inputsGpio), SWTCH_SW_CHANNEL, SWTCHS_SWS_MASK);
+	XGpio_SetDataDirection(&(experiData.inputsGpio), BTNS_SW_CHANNEL, BTNS_SWS_MASK);
 	taskEXIT_CRITICAL();
 
 	/* Initialize the four color LEDs and four basic LEDs to all PWM periods set
@@ -180,9 +173,6 @@ void Experiment_prvAcl2Task( void *pvParameters )
 	for(;;) {
 		/* Update the Pmod SSD two digit seven segment display. */
 		Experiment_updateSSD(&experiData);
-
-		/* Update the color LEDs based on the current operating mode. */
-		Experiment_updateLedsDisplayMode(&experiData);
 
 		/* Update the basic LEDs based on current global statuses. */
 		Experiment_updateLedsStatuses(&experiData);
@@ -222,10 +212,6 @@ void Experiment_prvAcl2Task( void *pvParameters )
  * belonging to this module's real-time task.
  */
 static void Experiment_InitData(t_experiment_data* expData) {
-	for (int iSilk = 0; iSilk < 8; ++iSilk) {
-		Experiment_SetLedUpdate(expData, iSilk, 0x00, 0x00, 0x00);
-	}
-
 	memset(expData->comString, 0x00, PRINTF_BUF_SZ);
 
 	expData->operatingMode = OPERATING_MODE_NONE;
@@ -245,101 +231,36 @@ static void Experiment_InitData(t_experiment_data* expData) {
 }
 
 /*-----------------------------------------------------------*/
-/* Helper function to set an updated state to one of the 8 LEDs. */
-static void Experiment_SetLedUpdate(t_experiment_data* expData,
-		uint8_t silk, uint8_t red, uint8_t green, uint8_t blue)
-{
-	if (silk < 8) {
-		expData->ledUpdate[silk].ledSilk = silk;
-		expData->ledUpdate[silk].rgb.paletteRed = red;
-		expData->ledUpdate[silk].rgb.paletteGreen = green;
-		expData->ledUpdate[silk].rgb.paletteBlue = blue;
-	}
-}
-
-/*-----------------------------------------------------------*/
-/* Helper function to send via queue a request for LED state update */
-static void Experiment_SendLedUpdate(t_experiment_data* expData,
-		uint8_t silk)
-{
-	if (silk < 8) {
-		xQueueSend( xQueueLedConfig, &(expData->ledUpdate[silk]), 0UL);
-	}
-}
-
-/*-----------------------------------------------------------*/
 /* Helper function for displaying LEDs 4,5,6,7 based on event count
  * and holding the LED display for a set interval of time.
  */
 static void Experiment_updateLedsStatuses(t_experiment_data* expData) {
 	/* Set LED status of LED0 to track test passing and test done. */
-	Experiment_SetLedUpdate(expData, 4, 0, ((expData->statusReg & ACL2c_STATUS_AWAKE_MASK) ? 100 : 0), 0);
-	Experiment_SetLedUpdate(expData, 5, 0, 0, 0);
-	Experiment_SetLedUpdate(expData, 6, 0, ((expData->switchesRead & SWTCH0_MASK) ? 100 : 0), 0);
-	Experiment_SetLedUpdate(expData, 7, 0, ((expData->switchesRead & SWTCH1_MASK) ? 100 : 0), 0);
-
-	for (int iSilk = 4; iSilk < 8; ++iSilk) {
-		Experiment_SendLedUpdate(expData, iSilk);
-	}
-}
-
-/*-----------------------------------------------------------*/
-/* Helper function for displaying LEDs 0,1 based on Operating Mode. */
-static void Experiment_updateLedsDisplayMode(t_experiment_data* expData)
-{
-	switch (expData->operatingMode) {
-	case OPERATING_MODE_MEAS:
-		/* LED pattern to indicate running Operating Mode Measurement. */
-		Experiment_SetLedUpdate(expData, 0, 0x00, 0xFF, 0x00);
-		Experiment_SetLedUpdate(expData, 1, 0x7F, 0x7F, 0x7F);
-		break;
-	case OPERATING_MODE_LINK:
-		/* LED pattern to indicate running Operating Mode Linked. */
-		Experiment_SetLedUpdate(expData, 0, 0x00, 0xFF, 0x00);
-		Experiment_SetLedUpdate(expData, 1, 0x7F, 0x00, 0x7F);
-		break;
-	case OPERATING_MODE_BOOT:
-		/* LED pattern to indicate running Operating Mode booting. */
-		Experiment_SetLedUpdate(expData, 0, 0xFF, 0x00, 0x00);
-		Experiment_SetLedUpdate(expData, 1, 0x7F, 0x00, 0x00);
-		break;
-	case OPERATING_MODE_NONE:
-		/* no break */
-	default: /* OPERATING_MODE_NONE */
-		Experiment_SetLedUpdate(expData, 0, 0x00, 0x00, 0xFF);
-		Experiment_SetLedUpdate(expData, 1, 0x7F, 0x00, 0x00);
-		break;
-	}
-
-	for (int iSilk = 0; iSilk <= 1; ++iSilk) {
-		Experiment_SendLedUpdate(expData, iSilk);
-	}
+	SetBasicLedState(2, ((expData->statusReg & ACL2c_STATUS_AWAKE_MASK) ? true : false));
+	SetBasicLedState(3, false);
+	SetBasicLedState(4, ((expData->switchesRead & SWTCH0_MASK) ? true : false));
+	SetBasicLedState(5, ((expData->switchesRead & SWTCH1_MASK) ? true : false));
 }
 
 /*-----------------------------------------------------------*/
 /* Helper function for displaying LEDs 2,3 based on activity events. */
 static void Experiment_updateLedsEvents(t_experiment_data* expData) {
-	static bool ld2Green = false;
-	static bool ld3Green = false;
+	static bool ld0Green = false;
+	static bool ld1Green = false;
 
 	Experiment_timeEvent(&(expData->cntActive));
 	Experiment_timeEvent(&(expData->cntInactive));
 
-	ld2Green = (expData->cntActive < CNT_DONE) ? true : false;
-	ld3Green = (expData->cntInactive < CNT_DONE) ? true : false;
+	ld0Green = (expData->cntActive < CNT_DONE) ? true : false;
+	ld1Green = (expData->cntInactive < CNT_DONE) ? true : false;
 
-	Experiment_SetLedUpdate(expData, 2, 
-		ld2Green ? 0x00 : 0xFF,
-		ld2Green ? 0xFF : 0x00,
-		0x00);
-	Experiment_SetLedUpdate(expData, 3, 
-		ld3Green ? 0x00 : 0xFF,
-		ld3Green ? 0xFF : 0x00,
-		0x00);
+	SetColorLedState(0, 'r', ld0Green ? false : true);
+	SetColorLedState(0, 'g', ld0Green ? true : false);
+	SetColorLedState(0, 'b', false);
 
-	for (int iSilk = 2; iSilk <= 3; ++iSilk) {
-		Experiment_SendLedUpdate(expData, iSilk);
-	}	
+	SetColorLedState(1, 'r', ld1Green ? false : true);
+	SetColorLedState(1, 'g', ld1Green ? true : false);
+	SetColorLedState(1, 'b', false);
 }
 
 /*-----------------------------------------------------------*/
@@ -439,8 +360,8 @@ static void Experiment_readUserInputs(t_experiment_data* expData) {
 	expData->switchesReadPrev = expData->switchesRead;
 	expData->buttonsReadPrev = expData->buttonsRead;
 
-	expData->switchesRead = XGpio_DiscreteRead(&(expData->axGpio), SWTCH_SW_CHANNEL);
-	expData->buttonsRead = XGpio_DiscreteRead(&(expData->axGpio), BTNS_SW_CHANNEL);
+	expData->switchesRead = XGpio_DiscreteRead(&(expData->inputsGpio), SWTCH_SW_CHANNEL);
+	expData->buttonsRead = XGpio_DiscreteRead(&(expData->inputsGpio), BTNS_SW_CHANNEL);
 
 	if ((expData->buttonsReadPrev == 0) && (expData->buttonsRead == BTN1_MASK)) {
 		if (expData->ssdDigitRight < 9) {

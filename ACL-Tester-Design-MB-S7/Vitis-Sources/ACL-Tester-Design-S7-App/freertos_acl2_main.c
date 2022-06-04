@@ -54,39 +54,26 @@
 /* Project includes. */
 #include "PmodCLS.h"
 #include "PmodACL2custom.h"
-#include "PWM.h"
-#include "led_pwm.h"
 #include "Experiment.h"
 
 /*-----------------------------------------------------------*/
 
 /* Task handles for controlling real-time tasks */
-static TaskHandle_t xLedTask;
 static TaskHandle_t xClsTask;
 static TaskHandle_t xAcl2Task;
 static TaskHandle_t xPrintTask;
 
 /* Queues for generating update events */
 QueueHandle_t xQueuePrint = NULL;
-QueueHandle_t xQueueLedConfig = NULL;
 QueueHandle_t xQueueClsDispl = NULL;
 
 /* The real-time tasks of this program. */
-static void prvLedTask( void *pvParameters ); /* Update LEDs on events */
 static void prvClsTask( void *pvParameters ); /* Print to PMOD CLS on events */
 static void prvAcl2Task( void *pvParameters ); /* Master task, operate PMOD ACL2 and generate events. */
 static void prvPrintTask( void *pvParameters ); /* Print to UARTlite on events */
 
 int main(void)
 {
-	/* Create a task to receive events for updating LED color palette for eight LEDs of the Arty-A7-100. */
-	xTaskCreate( prvLedTask,
-				 (const char*) "LC",
-				 configMINIMAL_STACK_SIZE,
-				 NULL,
-				 tskIDLE_PRIORITY,
-				 &xLedTask );
-
 	/* Create a task to receive 16x2 text line updates to the external dot-matrix LCD of the PMOD CLS. */
 	xTaskCreate( prvClsTask,
 				 (const char*) "CLS",
@@ -111,17 +98,11 @@ int main(void)
 				 tskIDLE_PRIORITY + 1,
 				 &xPrintTask );
 
-	/* Create the LED configuration Queue for receiving events for LED configuration. */
-	xQueueLedConfig = xQueueCreate(10, sizeof(t_rgb_led_palette_silk));
-
 	/* Create the 16x2 dot-matrix LCD display receiving text updates queue. */
 	xQueueClsDispl = xQueueCreate(2, sizeof(t_cls_lines));
 
 	/* Create the serial console printf() queue for short strings to print to console. */
 	xQueuePrint = xQueueCreate(4, PRINTF_BUF_SZ);
-
-	/* Check the queue was created. */
-	configASSERT(xQueueLedConfig);
 
 	/* Check the queue was created. */
 	configASSERT(xQueueClsDispl);
@@ -138,27 +119,6 @@ int main(void)
 	to be created.  See the memory management section on the FreeRTOS web site
 	for more details. */
 	for( ;; );
-}
-
-/*-----------------------------------------------------------*/
-static void prvLedTask( void *pvParameters )
-{
-	t_rgb_led_palette_silk currLedConfig;
-	InitAllLedsOff();
-
-	for (;;)
-	{
-		/* Block on LED configuration queue to receive the next incoming event. */
-		xQueueReceive(xQueueLedConfig, &currLedConfig, portMAX_DELAY);
-
-		if (currLedConfig.ledSilk < 4) {
-			SetRgbPaletteLed(currLedConfig.ledSilk, &(currLedConfig.rgb));
-		} else if (currLedConfig.ledSilk < 8) {
-			if (currLedConfig.rgb.paletteGreen <= 100) {
-				SetBasicLedPercent(currLedConfig.ledSilk, 10 * currLedConfig.rgb.paletteGreen);
-			}
-		}
-	}
 }
 
 /*-----------------------------------------------------------*/
