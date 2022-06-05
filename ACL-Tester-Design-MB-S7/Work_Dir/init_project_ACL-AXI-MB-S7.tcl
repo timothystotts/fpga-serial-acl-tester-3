@@ -186,18 +186,11 @@ if { $obj != {} } {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- [file normalize "${origin_dir}/../IPI-BDs/system/system.bd"] \
- [file normalize "${origin_dir}/../IPI-BDs/system/hdl/system_wrapper.v"] \
  [file normalize "${origin_dir}/../IPI-BDs/system/ip/system_mig_7series_0_3/board.prj"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/../IPI-BDs/system/system.bd"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-
 set file "$origin_dir/../IPI-BDs/system/ip/system_mig_7series_0_3/board.prj"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
@@ -208,8 +201,6 @@ set_property -name "scoped_to_cells" -value "system_mig_7series_0_3" -objects $f
 # None
 
 # Set 'sources_1' fileset properties
-set obj [get_filesets sources_1]
-set_property -name "top" -value "system_wrapper" -objects $obj
 
 # Create 'constrs_1' fileset (if not found)
 if {[string equal [get_filesets -quiet constrs_1] ""]} {
@@ -249,7 +240,6 @@ set obj [get_filesets sim_1]
 
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
-set_property -name "top" -value "system_wrapper" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
 
 # Set 'utils_1' fileset object
