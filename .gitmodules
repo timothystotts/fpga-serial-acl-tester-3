@@ -9,3 +9,7 @@
 [submodule "ACL-Tester-Design-VHDL/OSVVM/OsvvmLibraries"]
 	path = ACL-Tester-Design-VHDL/OSVVM/OsvvmLibraries
 	url = https://github.com/OSVVM/OsvvmLibraries.git
+[submodule "ACL-Tester-Design-MB-S7/IP/vivado-library"]
+	path = ACL-Tester-Design-MB-S7/IP/vivado-library
+	url = https://github.com/timothystotts/vivado-library.git
+	branch = arty-a7-100-vivado-2021.2
