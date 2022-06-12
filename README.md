@@ -98,9 +98,9 @@ equivalent to that of the ACL-Tester-Design-MB design.
 These six groupings of design provide equivalent functionality, excepting that the HDL designs provide
 additional pulsing effect of the board's three-emitter RGB LEDs for esthetics.
 Additionally:
-	- the Arty A7-100 Xilinx MicroBlaze design operates the RGB and Basic LEDs with PWMs instead of GPIO.
-	- the Arty S7-25 Xilinx MicroBlaze design operates the RGB and Basic LEDs with GPIO instead of PWMs.
-	- the Zynq design produces equivalent functionality as the MB (MicroBlaze) desgin, but targting a Zybo Z7-20 board instead.
+- the Arty A7-100 Xilinx MicroBlaze design operates the RGB and Basic LEDs with PWMs instead of GPIO.
+- the Arty S7-25 Xilinx MicroBlaze design operates the RGB and Basic LEDs with GPIO instead of PWMs.
+- the Zynq design produces equivalent functionality as the MB (MicroBlaze) desgin, but targting a Zybo Z7-20 board instead.
 
 Further notes.
 The Xilinx MicroBlaze and Xilinx Zynq designs
