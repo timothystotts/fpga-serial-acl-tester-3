@@ -27,7 +27,7 @@
 -- \brief A combinatorial block to convert ADXL362 Readings to ASCII text
 -- representations.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2009"
+`begin_keywords "1800-2012"
 //Combinatorial measurement registers to ASCII text conversion.-----------------
 //Part 1: Module header:--------------------------------------------------------
 module adxl362_readings_to_ascii(

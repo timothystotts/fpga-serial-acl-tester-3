@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020-2021 Timothy Stotts
+-- Copyright (c) 2020-2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@
 --
 -- Note that this module does not track the clock locking of the MMCM.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2009"
+`begin_keywords "1800-2012"
 //Reset Synchronizer------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module arty_reset_synchronizer(
