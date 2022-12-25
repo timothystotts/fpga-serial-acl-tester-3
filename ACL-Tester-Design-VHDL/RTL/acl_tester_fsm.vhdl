@@ -123,7 +123,7 @@ begin
 					s_tester_nx_state <= ST_2;
 				end if;
 
-			when ST_2 => -- Step two to wait for ACL2 to initialize its MM initialization
+			when ST_2 => -- Step two to wait for ACL2 to start its MM initialization
 				o_active_init_display <= '1';
 				o_active_run_display  <= '0';
 				s_mode_is_measur_val  <= s_mode_is_measur_aux;
@@ -208,7 +208,7 @@ begin
 				         -- to enter a non-exclusive state to then transition
 				         -- to State A which in turn will reset the PMOD ACL2 and wait
 				         -- for an exclusive command on the switches 0,1.
-				o_active_init_display <= '0';
+				o_active_init_display <= '0'; -- allow the display to show non-idle data
 				o_active_run_display  <= '1';
 				s_mode_is_measur_val  <= s_mode_is_measur_aux;
 				s_mode_is_linked_val  <= s_mode_is_linked_aux;

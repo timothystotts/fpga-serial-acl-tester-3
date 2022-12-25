@@ -125,7 +125,7 @@ begin: p_tester_fsm_comb
 			if (i_acl_command_ready) s_tester_nx_state = ST_1;
 			else s_tester_nx_state = ST_2;
 		end
-		ST_2: begin // Step two to wait for ACL2 to initialize its MM initialization
+		ST_2: begin // Step two to wait for ACL2 to start its MM initialization
 			o_reading_inactive = 1'b0;
 			o_acl_cmd_init_measur_mode = 1'b0;
 			o_acl_cmd_init_linked_mode = 1'b0;
@@ -231,10 +231,10 @@ begin: p_tester_fsm_comb
 			s_tester_nx_state = ST_9;
 		end
 		ST_9: begin // State nine is RUNNING IDLE and waits for switches 0,1
-					   // to enter an equal an non-exclusive state to then transition
+					   // to enter a non-exclusive state to then transition
 					   // to State A which in turn will reset the PMOD ACL2 and wait
 					   // for an exclusive command on the switches 0,1.
-			o_reading_inactive = 1'b0;
+			o_reading_inactive = 1'b0; // allow the display to show non-idle data
 			o_acl_cmd_init_measur_mode = 1'b0;
 			o_acl_cmd_init_linked_mode = 1'b0;
 			o_acl_cmd_start_measur_mode = 1'b0;
