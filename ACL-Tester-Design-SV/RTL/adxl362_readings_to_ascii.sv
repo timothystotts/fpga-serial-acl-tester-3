@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020-2021 Timothy Stotts
+-- Copyright (c) 2020-2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -42,8 +42,8 @@ module adxl362_readings_to_ascii(
 timeunit 1ns;
 timeprecision 1ps;
 
-/* A re-entrant function that converts a 4-bit part-select to an 8-bit ASCII
-   hexadecimal character. */
+// A re-entrant function that converts a 4-bit part-select to an 8-bit ASCII
+// hexadecimal character.
 function automatic [7:0] ascii_of_hdigit(input [3:0] bchex_val);
 	begin
 		if (bchex_val < 10) ascii_of_hdigit = 8'h30 + {4'h0, bchex_val};
@@ -51,7 +51,7 @@ function automatic [7:0] ascii_of_hdigit(input [3:0] bchex_val);
 	end
 endfunction
 
-/* Connections for reparse of the eight PMOD ACL2 measurement reading bytes */
+// Connections for reparse of the eight PMOD ACL2 measurement reading bytes
 logic [7:0] s_hex_xaxis_msb;
 logic [7:0] s_hex_xaxis_lsb;
 logic [7:0] s_hex_yaxis_msb;
@@ -61,7 +61,7 @@ logic [7:0] s_hex_zaxis_lsb;
 logic [7:0] s_hex_temp_msb;
 logic [7:0] s_hex_temp_lsb;
 
-/* Connections for reparse of the eight PMOD ACL2 measurement reading bytes */
+// Connections for reparse of the eight PMOD ACL2 measurement reading bytes
 localparam signed [15:0] c_signed_zero = 0;
 logic signed [15:0] s_txt_xaxis_s16;
 logic signed [15:0] s_txt_yaxis_s16;
@@ -72,8 +72,8 @@ logic [15:0] s_txt_yaxis_u16;
 logic [15:0] s_txt_zaxis_u16;
 logic [15:0] s_txt_temp_u16;
 
-/* Connections for Hex to ASCII reparse of the sixteen digits of the eight
-   PMOD ACL2 measurement reading bytes */
+// Connections for Hex to ASCII reparse of the sixteen digits of the eight
+// PMOD ACL2 measurement reading bytes
 logic [7:0] s_char_xaxis_msb_3;
 logic [7:0] s_char_xaxis_msb_2;
 logic [7:0] s_char_xaxis_lsb_1;
@@ -91,8 +91,8 @@ logic [7:0] s_char_temp_msb_2;
 logic [7:0] s_char_temp_lsb_1;
 logic [7:0] s_char_temp_lsb_0;
 
-/* Signals for Decimal to ASCII reparse of the sixteen digits of the eight
-   PMOD ACL2 measurement reading bytes */
+// Signals for Decimal to ASCII reparse of the sixteen digits of the eight
+// PMOD ACL2 measurement reading bytes
 logic [15:0] s_dat_xaxis_m0;
 logic [15:0] s_dat_xaxis_f0;
 logic [15:0] s_dat_xaxis_f1;
@@ -137,9 +137,9 @@ logic [7:0] s_char_temp_m1;
 logic [7:0] s_char_temp_m0;
 
 //Part 3: Statements------------------------------------------------------------
-/* Parse out the hexadecimal reading of mg force and temperature from the
-   PMOD ACL2 data register readings. This partsing is done to display the
-   measurement readings at a slower refresh rate on the PMOD CLS. */
+// Parse out the hexadecimal reading of mg force and temperature from the
+// PMOD ACL2 data register readings. This partsing is done to display the
+// measurement readings at a slower refresh rate on the PMOD CLS.
 assign s_hex_xaxis_lsb = i_3axis_temp[(8*8-1)-:8];
 assign s_hex_xaxis_msb = i_3axis_temp[(7*8-1)-:8];
 assign s_hex_yaxis_lsb = i_3axis_temp[(6*8-1)-:8];
@@ -159,7 +159,7 @@ assign s_txt_yaxis_u16 = (s_txt_yaxis_s16 < 0) ? (c_signed_zero - s_txt_yaxis_s1
 assign s_txt_zaxis_u16 = (s_txt_zaxis_s16 < 0) ? (c_signed_zero - s_txt_zaxis_s16) : s_txt_zaxis_s16;
 assign s_txt_temp_u16 = (s_txt_temp_s16 < 0) ? (c_signed_zero - s_txt_temp_s16) : s_txt_temp_s16;
 
-/* ASCII parse-out of the X-Axis measurement reading. */
+// ASCII parse-out of the X-Axis measurement reading.
 assign s_char_xaxis_msb_3 = ascii_of_hdigit(s_hex_xaxis_msb[7-:4]);
 assign s_char_xaxis_msb_2 = ascii_of_hdigit(s_hex_xaxis_msb[3-:4]);
 assign s_char_xaxis_lsb_1 = ascii_of_hdigit(s_hex_xaxis_lsb[7-:4]);
@@ -176,7 +176,7 @@ assign s_char_xaxis_f0 = ascii_of_hdigit(s_dat_xaxis_f0[3-:4]);
 assign s_char_xaxis_f1 = ascii_of_hdigit(s_dat_xaxis_f1[3-:4]);
 assign s_char_xaxis_f2 = ascii_of_hdigit(s_dat_xaxis_f2[3-:4]);
 
-/* ASCII parse-out of the Y-Axis measurement reading. */
+// ASCII parse-out of the Y-Axis measurement reading.
 assign s_char_yaxis_msb_3 = ascii_of_hdigit(s_hex_yaxis_msb[7-:4]);
 assign s_char_yaxis_msb_2 = ascii_of_hdigit(s_hex_yaxis_msb[3-:4]);
 assign s_char_yaxis_lsb_1 = ascii_of_hdigit(s_hex_yaxis_lsb[7-:4]);
@@ -193,7 +193,7 @@ assign s_char_yaxis_f0 = ascii_of_hdigit(s_dat_yaxis_f0[3-:4]);
 assign s_char_yaxis_f1 = ascii_of_hdigit(s_dat_yaxis_f1[3-:4]);
 assign s_char_yaxis_f2 = ascii_of_hdigit(s_dat_yaxis_f2[3-:4]);
 
-/* ASCII parse-out of the Z-Axis measurement reading. */
+// ASCII parse-out of the Z-Axis measurement reading.
 assign s_char_zaxis_msb_3 = ascii_of_hdigit(s_hex_zaxis_msb[7-:4]);
 assign s_char_zaxis_msb_2 = ascii_of_hdigit(s_hex_zaxis_msb[3-:4]);
 assign s_char_zaxis_lsb_1 = ascii_of_hdigit(s_hex_zaxis_lsb[7-:4]);
@@ -210,7 +210,7 @@ assign s_char_zaxis_f0 = ascii_of_hdigit(s_dat_zaxis_f0[3-:4]);
 assign s_char_zaxis_f1 = ascii_of_hdigit(s_dat_zaxis_f1[3-:4]);
 assign s_char_zaxis_f2 = ascii_of_hdigit(s_dat_zaxis_f2[3-:4]);
 
-/* ASCII parse-out of the Compensating Temperature measurement reading. */
+// ASCII parse-out of the Compensating Temperature measurement reading.
 assign s_char_temp_msb_3 = ascii_of_hdigit(s_hex_temp_msb[7-:4]);
 assign s_char_temp_msb_2 = ascii_of_hdigit(s_hex_temp_msb[3-:4]);
 assign s_char_temp_lsb_1 = ascii_of_hdigit(s_hex_temp_lsb[7-:4]);
@@ -226,8 +226,8 @@ assign s_char_temp_m2 = ascii_of_hdigit(s_dat_temp_m2[3-:4]);
 assign s_char_temp_m1 = ascii_of_hdigit(s_dat_temp_m1[3-:4]);
 assign s_char_temp_m0 = ascii_of_hdigit(s_dat_temp_m0[3-:4]);
 
-/* Assemblly of ASCII Line 1 to display on the PMOD CLS. */
-/* ASCII Line:  "X:____  Y:____  " or "X:0123  Y:ABCD  " */
+// Assemblly of ASCII Line 1 to display on the PMOD CLS.
+// ASCII Line:  "X:____  Y:____  " or "X:0123  Y:ABCD  "
 assign o_dat_ascii_line1 = (i_reading_inactive)
 								?
 								{8'h58, 8'h3A,
@@ -244,7 +244,7 @@ assign o_dat_ascii_line1 = (i_reading_inactive)
 								s_char_yaxis_lsb_0, 8'h20, 8'h20}
 								;
 
-/* ASCII line: "X______ Y______ " or "X-0.123 Y 0.345 " */
+// ASCII line: "X______ Y______ " or "X-0.123 Y 0.345 "
 assign o_txt_ascii_line1 = (i_reading_inactive)
 								?
 								{8'h58, 8'h5F,
@@ -261,8 +261,8 @@ assign o_txt_ascii_line1 = (i_reading_inactive)
 								s_char_yaxis_f1, s_char_yaxis_f2, 8'h20}
 								;
 
-/* Assemblly of ASCII Line 2 to display on the PMOD CLS. */
-/* ASCII Line:  "Z:____  T:____  " or "Z:0123  T:ABCD  " */
+// Assemblly of ASCII Line 2 to display on the PMOD CLS.
+// ASCII Line:  "Z:____  T:____  " or "Z:0123  T:ABCD  "
 assign o_dat_ascii_line2 = (i_reading_inactive)
 								?
 								{8'h5A, 8'h3A,
@@ -279,7 +279,7 @@ assign o_dat_ascii_line2 = (i_reading_inactive)
 								s_char_temp_lsb_0, 8'h20, 8'h20}
 								;
 
-/* ASCII line: "Z______ T______ " or "Z 1.123 T5201   " */
+// ASCII line: "Z______ T______ " or "Z 1.123 T5201   "
 assign o_txt_ascii_line2 = (i_reading_inactive)
 								?
 								{8'h5A, 8'h5F,

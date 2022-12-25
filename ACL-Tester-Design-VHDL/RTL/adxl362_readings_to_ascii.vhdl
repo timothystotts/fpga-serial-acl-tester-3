@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020 Timothy Stotts
+-- Copyright (c) 2020,2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -137,7 +137,7 @@ architecture rtl of adxl362_readings_to_ascii is
 	signal s_char_temp_m0 : std_logic_vector(7 downto 0);
 begin
 	-- Parse out the hexadecimal reading of mg force and temperature from the
-	-- PMOD ACL2 data register readings. This partsing is done to display the
+	-- PMOD ACL2 data register readings. This parsing is done to display the
 	-- measurement readings at a slower refresh rate on the PMOD CLS.
 	s_hex_xaxis_lsb <= i_3axis_temp((8*8-1) downto (7*8));
 	s_hex_xaxis_msb <= i_3axis_temp((7*8-1) downto (6*8));
