@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020 Timothy Stotts
+-- Copyright (c) 2020,2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,8 @@
 --------------------------------------------------------------------------------
 -- \file acl_tester_fsm.vhdl
 --
--- \brief A simple text byte feeder to the UART TX module.
+-- \brief A simple FSM to control the execution of the ADXL362 accelerometer
+-- testing.
 --------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
@@ -62,7 +63,7 @@ architecture rtl of acl_tester_fsm is
 	signal s_tester_pr_state : t_tester_state := ST_0;
 	signal s_tester_nx_state : t_tester_state := ST_0;
 
-	-- Tester FSM general outputs that translate to LED color display.
+	-- Tester FSM auxiliary registers that translate to LED color display.
 	signal s_mode_is_measur_val : std_logic;
 	signal s_mode_is_measur_aux : std_logic;
 	signal s_mode_is_linked_val : std_logic;
@@ -122,7 +123,7 @@ begin
 					s_tester_nx_state <= ST_2;
 				end if;
 
-			when ST_2 => -- Step two to wait for ACL2 to start its MM initialization
+			when ST_2 => -- Step two to wait for ACL2 to initialize its MM initialization
 				o_active_init_display <= '1';
 				o_active_run_display  <= '0';
 				s_mode_is_measur_val  <= s_mode_is_measur_aux;
@@ -147,7 +148,7 @@ begin
 					s_tester_nx_state <= ST_4;
 				end if;
 
-			when ST_4 => -- Step four to stop issuing commands and transition to IDLE
+			when ST_4 => -- Step four to stop issuing ACL2 commands and transition to IDLE
 				         -- (place holder for other steps)
 				o_active_init_display <= '1';
 				o_active_run_display  <= '0';
@@ -204,7 +205,7 @@ begin
 				s_tester_nx_state <= ST_9;
 
 			when ST_9 => -- State nine is RUNNING IDLE and waits for switches 0,1
-				         -- to entera equal an non-exclusive state to then transition
+				         -- to enter a non-exclusive state to then transition
 				         -- to State A which in turn will reset the PMOD ACL2 and wait
 				         -- for an exclusive command on the switches 0,1.
 				o_active_init_display <= '0';
@@ -212,7 +213,7 @@ begin
 				s_mode_is_measur_val  <= s_mode_is_measur_aux;
 				s_mode_is_linked_val  <= s_mode_is_linked_aux;
 
-				if (i_switches_debounced = "0000") then -- no single switch is ON
+				if (i_switches_debounced = "0000") then -- no solitary switch is ON
 					s_tester_nx_state <= ST_A;
 				else
 					s_tester_nx_state <= ST_9;
@@ -221,7 +222,7 @@ begin
 			when ST_A => -- Step A to issue the Soft Reset command to the PMOD ACL2
 				         -- Then transition to Step Zero for INIT IDLE and waiting
 				         -- for exclusive switch position.
-				o_acl_cmd_soft_reset  <= '1';
+				o_acl_cmd_soft_reset  <= '1'; -- acts as a level interrupt instead of command
 				o_active_init_display <= '0';
 				o_active_run_display  <= '0';
 				s_mode_is_measur_val  <= '0';
@@ -243,9 +244,9 @@ begin
 				s_mode_is_linked_val  <= s_mode_is_linked_aux;
 
 				if (i_acl_command_ready = '1') then
-					if (i_switches_debounced = "0001") then -- switch 0
+					if (i_switches_debounced = "0001") then -- switch 0 solitary
 						s_tester_nx_state <= ST_1;
-					elsif (i_switches_debounced = "0010") then -- switch 1
+					elsif (i_switches_debounced = "0010") then -- switch 1 solitary
 						s_tester_nx_state <= ST_5;
 					else
 						s_tester_nx_state <= ST_0;
