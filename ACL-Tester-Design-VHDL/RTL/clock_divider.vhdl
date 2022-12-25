@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020 Timothy Stotts
+-- Copyright (c) 2020.2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,7 @@
 --------------------------------------------------------------------------------
 -- \file clock_divider.vhdl
 --
--- \brief A clock divider to divide a MMCM clock by a large divisor, plus
--- synchronized reset in divide clock domain.
+-- \brief A clock divider for an even integer division of the source clock.
 --
 -- \description Generates a single clock cycle synchronous reset and generates
 -- a divided-down clock for usage of clock edge sensitivity.

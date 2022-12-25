@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020-2021 Timothy Stotts
+-- Copyright (c) 2020-2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@
 -- this module implements a clock divider.
 ------------------------------------------------------------------------------*/
 //------------------------------------------------------------------------------
-`begin_keywords "1800-2009"
+`begin_keywords "1800-2012"
 //Part 1: Module header:--------------------------------------------------------
 module clock_divider
 	#(parameter
@@ -50,27 +50,27 @@ module clock_divider
 timeunit 1ns;
 timeprecision 1ps;
 
-/* A constant representing the counter maximum which is an even division of the
-   source clock, per paramter \ref par_clk_divisor . */
+// A constant representing the counter maximum which is an even division of the
+// source clock, per paramter \ref par_clk_divisor .
 localparam integer c_clk_max = (par_clk_divisor / 2) - 1;
 
-/* Clock division count, that counts from 0 to \ref c_clk_max and back again
-   to run the divided clock output at an even division \par_clk_divisor of
-   the source clock. */
+// Clock division count, that counts from 0 to \ref c_clk_max and back again
+// to run the divided clock output at an even division \par_clk_divisor of
+// the source clock.
 integer s_clk_div_cnt;
 
-/* A clock enable at the source clock frequency which issues the periodic
-   toggle of the divided clock. */
+// A clock enable at the source clock frequency which issues the periodic
+// toggle of the divided clock.
 logic s_clk_div_ce;
 
-/* Variables for the divided clock and reset. */
+// Variables for the divided clock and reset.
 logic s_clk_out;
 logic s_rst_out;
 
 //Part 3: Statements------------------------------------------------------------
-/* The even clock frequency division is operated by a clock enable signal to
-   indicate the upstream clock cycle for changing the edge of the downstream
-   clock waveform. */
+// The even clock frequency division is operated by a clock enable signal to
+// indicate the upstream clock cycle for changing the edge of the downstream
+// clock waveform.
 always_ff @(posedge i_clk_mhz)
 begin: p_clk_div_cnt
 	if (i_rst_mhz) begin
@@ -88,11 +88,11 @@ begin: p_clk_div_cnt
 		end : if_counter_lt_max_inc
 end : p_clk_div_cnt
 
-/* While the upstream clock is executing with reset held, this process will
-   hold the clock at zero and the reset at active one. When the upstream reset
-   signal is released, the downstream clock will have one positive edge with
-   this reset output held active one, and then on the falling edge of the
-   downstream clock, the reset will change from active one to inactive low. */
+// While the upstream clock is executing with reset held, this process will
+// hold the clock at zero and the reset at active one. When the upstream reset
+// signal is released, the downstream clock will have one positive edge with
+// this reset output held active one, and then on the falling edge of the
+// downstream clock, the reset will change from active one to inactive low.
 always_ff @(posedge i_clk_mhz)
 begin: p_clk_div_out
 	if (i_rst_mhz) begin
