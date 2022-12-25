@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020-2021 Timothy Stotts
+-- Copyright (c) 2020-2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,11 @@
 /**-----------------------------------------------------------------------------
 -- \file clock_enable_divider.sv
 --
--- \brief A clock enable divider for an integer division of the source
--- clock enable. The clock and synchronous reset are kept the same; but the
+-- \brief A clock enable divider for an integer division of the source clock
+-- enable. The clock and synchronous reset are kept the same; but the
 -- clock enable is further divided.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2009"
+`begin_keywords "1800-2012"
 //------------------------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module clock_enable_divider
@@ -45,24 +45,24 @@ module clock_enable_divider
 timeunit 1ns;
 timeprecision 1ps;
 
-/* A constant representing the counter maximum which is an even division of the
-   source clock, per paramter \ref par_ce_divisor . */
+// A constant representing the counter maximum which is an even division of the
+// source clock, per paramter \ref par_ce_divisor .
 localparam integer c_clk_max = par_ce_divisor - 1;
 
-/* Clock division count, that counts from 0 to \ref c_clk_max and back again
-   to run the divided clock enable output at a division of i_clk_mhz according
-   to a down division ratio of \ref i_ce_mhz
-   the source clock. */
+// Clock division count, that counts from 0 to \ref c_clk_max and back again
+// to run the divided clock enable output at a division of i_clk_mhz according
+// to a down division ratio of \ref i_ce_mhz
+// the source clock.
 integer s_clk_div_cnt;
 
-/* A clock enable at the source clock frequency which issues the periodic
-   toggle of the divided clock. */
+// A clock enable at the source clock frequency which issues the periodic
+// toggle of the divided clock.
 logic s_clk_div_ce;
 
 //Part 3: Statements------------------------------------------------------------
-/* The even clock frequency division is operated by a clock enable signal to
-   indicate the upstream clock cycle for changing the edge of the downstream
-   clock enable waveform. */
+// The even clock frequency division is operated by a clock enable signal to
+// indicate the upstream clock cycle for changing the edge of the downstream
+// clock enable waveform.
 always_ff @(posedge i_clk_mhz)
 begin: p_clk_div_cnt
 	if (i_rst_mhz) begin
