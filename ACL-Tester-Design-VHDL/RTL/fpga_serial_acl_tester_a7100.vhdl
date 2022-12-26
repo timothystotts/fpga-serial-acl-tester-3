@@ -61,22 +61,22 @@ entity fpga_serial_acl_tester_a7100 is
 		ei_pmod_acl2_cipo : in  std_logic;
 		ei_pmod_acl2_int1 : in  std_logic;
 		ei_pmod_acl2_int2 : in  std_logic;
-		-- blue LEDs of the multicolor
+		-- blue emitters of the multicolor LEDs
 		eo_led0_b : out std_logic;
 		eo_led1_b : out std_logic;
 		eo_led2_b : out std_logic;
 		eo_led3_b : out std_logic;
-		-- red LEDs of the multicolor
+		-- red emitters of the multicolor LEDs
 		eo_led0_r : out std_logic;
 		eo_led1_r : out std_logic;
 		eo_led2_r : out std_logic;
 		eo_led3_r : out std_logic;
-		-- green LEDs of the multicolor
+		-- green emitters of the multicolor LEDs
 		eo_led0_g : out std_logic;
 		eo_led1_g : out std_logic;
 		eo_led2_g : out std_logic;
 		eo_led3_g : out std_logic;
-		-- green LEDs of the regular LEDs
+		-- green emitters of the basic LEDs
 		eo_led4 : out std_logic;
 		eo_led5 : out std_logic;
 		eo_led6 : out std_logic;
@@ -86,7 +86,7 @@ entity fpga_serial_acl_tester_a7100 is
 		ei_sw1 : in std_logic;
 		ei_sw2 : in std_logic;
 		ei_sw3 : in std_logic;
-		-- four switches
+		-- four buttons
 		ei_btn0 : in std_logic;
 		ei_btn1 : in std_logic;
 		ei_btn2 : in std_logic;
@@ -111,9 +111,7 @@ architecture rtl of fpga_serial_acl_tester_a7100 is
 	-- Main clock frequency in Hz
 	constant c_FCLK : natural := 20_000_000;
 
-	-- MMCM and Processor System Reset signals for PLL clock generation from the
-	-- Clocking Wizard and Synchronous Reset generation from the Processor System
-	-- Reset module.
+	-- MMCM and System Reset signals
 	signal s_mmcm_locked : std_logic;
 	signal s_clk_20mhz   : std_logic;
 	signal s_rst_20mhz   : std_logic;
@@ -151,7 +149,7 @@ architecture rtl of fpga_serial_acl_tester_a7100 is
 	signal s_acl2_cmd_start_linked_mode : std_logic;
 	signal s_acl2_cmd_soft_reset_acl2   : std_logic;
 
-	-- Tester FSM outputs
+	-- Tester FSM general outputs that translate to LED color display.
 	signal s_active_init_display : std_logic;
 	signal s_active_run_display  : std_logic;
 	signal s_mode_is_measur      : std_logic;
@@ -161,7 +159,7 @@ architecture rtl of fpga_serial_acl_tester_a7100 is
 	signal si_switches : std_logic_vector(3 downto 0);
 	signal s_sw_deb    : std_logic_vector(3 downto 0);
 
-	-- switch inputs debounced
+	-- button inputs debounced
 	signal si_buttons : std_logic_vector(3 downto 0);
 	signal s_btn_deb  : std_logic_vector(3 downto 0);
 
@@ -200,11 +198,14 @@ architecture rtl of fpga_serial_acl_tester_a7100 is
 	signal s_clk_ignore_clk5      : std_logic;
 	signal s_clk_ignore_clk6      : std_logic;
 	signal s_clk_ignore_clkfboutb : std_logic;
+	-- Extra MMCM signals for full port map to the MMCM primative, where
+	-- these signals are connected.
 	signal s_clk_clkfbout         : std_logic;
 	signal s_clk_pwrdwn           : std_logic;
 	signal s_clk_resetin          : std_logic;
 
-	-- Color palette signals to connect \ref led_palette_pulser to \ref led_pwm_driver .
+	-- Color palette signals to connect \ref led_palette_pulser to
+	-- \ref led_pwm_driver .
 	signal s_color_led_red_value   : t_led_color_values(3 downto 0);
 	signal s_color_led_green_value : t_led_color_values(3 downto 0);
 	signal s_color_led_blue_value  : t_led_color_values(3 downto 0);

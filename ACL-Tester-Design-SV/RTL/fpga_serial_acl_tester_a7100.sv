@@ -34,7 +34,7 @@
 -- motion detection.
 ------------------------------------------------------------------------------*/
 //------------------------------------------------------------------------------
-`begin_keywords "1800-2009"
+`begin_keywords "1800-2012"
 //Multiple Moore Machines
 //Part 1: Module header:--------------------------------------------------------
 module fpga_serial_acl_tester_a7100
@@ -42,67 +42,65 @@ module fpga_serial_acl_tester_a7100
 	#(parameter
 		integer parm_fast_simulation = 0)
 	(
-	/* external clock and active-low reset */
+	// external clock and active-low reset
 	input logic CLK100MHZ,
 	input logic i_resetn,
-	/* PMOD ACL2 SPI bus 4-wire and two interrupt signals */
+	// PMOD ACL2 SPI bus 4-wire and two interrupt signals
 	output logic eo_pmod_acl2_sck,
 	output logic eo_pmod_acl2_csn,
 	output logic eo_pmod_acl2_copi,
 	input logic ei_pmod_acl2_cipo,
 	input logic ei_pmod_acl2_int1,
 	input logic ei_pmod_acl2_int2,
-	/* blue LEDs of the multicolor */
+	// blue emitters of the multicolor LEDs
 	output logic eo_led0_b,
 	output logic eo_led1_b,
 	output logic eo_led2_b,
 	output logic eo_led3_b,
-	/* red LEDs of the multicolor */
+	// red emitters of the multicolor LEDs
 	output logic eo_led0_r,
 	output logic eo_led1_r,
 	output logic eo_led2_r,
 	output logic eo_led3_r,
-	/* green LEDs of the multicolor */
+	// green emitters of the multicolor LEDs
 	output logic eo_led0_g,
 	output logic eo_led1_g,
 	output logic eo_led2_g,
 	output logic eo_led3_g,
-	/* green LEDs of the regular LEDs */
+	// green emitters of the basic LEDs
 	output logic eo_led4,
 	output logic eo_led5,
 	output logic eo_led6,
 	output logic eo_led7,
-	/* four switches */
+	// four switches
 	input logic ei_sw0,
 	input logic ei_sw1,
 	input logic ei_sw2,
 	input logic ei_sw3,
-	/* four buttons */
+	// four buttons
 	input logic ei_btn0,
 	input logic ei_btn1,
 	input logic ei_btn2,
 	input logic ei_btn3,
-	/* PMOD CLS SPI bus 4-wire */
+	// PMOD CLS SPI bus 4-wire
 	output logic eo_pmod_cls_csn,
 	output logic eo_pmod_cls_sck,
 	output logic eo_pmod_cls_dq0,
 	input logic ei_pmod_cls_dq1,
-	/* Arty A7-100T UART TX and RX signals */
+	// Arty A7-100T UART TX and RX signals
 	output logic eo_uart_tx,
 	input logic ei_uart_rx,
-	/* PMOD SSD direct GPIO */
+	// PMOD SSD direct GPIO
 	output logic [7:0] eo_ssd_pmod0);
 
 //Part 2: Declarations----------------------------------------------------------
 timeunit 1ns;
 timeprecision 1ps;
 
-/* Disable or enable fast FSM delays for simulation instead of impelementation. */
+// Main clock frequency in Hz
 localparam integer c_FCLK = 20000000;
 
-/* MMCM and Processor System Reset signals for PLL clock generation from the
-   Clocking Wizard and Synchronous Reset generation from the Processor System
-   Reset module. */
+// MMCM and System Reset signals
 logic s_mmcm_locked;
 logic s_clk_20mhz;
 logic s_rst_20mhz;
@@ -110,7 +108,7 @@ logic s_clk_7_37mhz;
 logic s_rst_7_37mhz;
 logic s_ce_2_5mhz;
 
-/* Tri-state connectivity with the PMOD ACL2. */
+// Tri-state connectivity with the PMOD ACL2.
 logic so_pmod_acl2_sck_o;
 logic so_pmod_acl2_sck_t;
 logic so_pmod_acl2_csn_o;
@@ -118,7 +116,7 @@ logic so_pmod_acl2_csn_t;
 logic so_pmod_acl2_copi_o;
 logic so_pmod_acl2_copi_t;
 
-/* Data and indications to be displayed on the LEDs and CLS. */
+// Data and indications to be displayed on the LEDs and CLS.
 t_pmod_acl2_reg_1 s_acl2_reg_status;
 logic s_acl2_reg_status_activity_stretched;
 logic s_acl2_reg_status_inactivity_stretched;
@@ -127,7 +125,7 @@ logic s_hex_3axis_temp_measurements_valid;
 t_pmod_acl2_reg_8 s_hex_3axis_temp_measurements_display;
 logic s_reading_inactive;
 
-/* Command to Operating Mode variables for the Tester FSM. */
+// Command to Operating Mode variables for the Tester FSM.
 logic s_acl2_command_ready;
 logic s_acl2_cmd_init_linked_mode;
 logic s_acl2_cmd_start_linked_mode;
@@ -135,21 +133,21 @@ logic s_acl2_cmd_init_measur_mode;
 logic s_acl2_cmd_start_measur_mode;
 logic s_acl2_cmd_soft_reset_acl2;
 
-/* Tester FSM general outputs that translate to LED color display. */
+// Tester FSM general outputs that translate to LED color display.
 logic s_active_init_display;
 logic s_active_run_display;
 logic s_mode_is_measur;
 logic s_mode_is_linked;
 
-/* switch inputs debounced */
+// switch inputs debounced
 logic [3:0] si_switches;
 logic [3:0] s_sw_deb;
 
-/* switch inputs debounced */
+// button inputs debounced
 logic [3:0] si_buttons;
 logic [3:0] s_btn_deb;
 
-/* Connections and variables for controlling the PMOD CLS custom driver. */
+// Connections and variables for controlling the PMOD CLS custom driver.
 logic s_cls_command_ready;
 logic s_cls_wr_clear_display;
 logic s_cls_wr_text_line1;
@@ -158,13 +156,13 @@ t_pmod_cls_ascii_line_16 s_cls_txt_ascii_line1;
 t_pmod_cls_ascii_line_16 s_cls_txt_ascii_line2;
 logic s_cls_feed_is_idle;
 
-/* Signals for text and data ASCII lines */
+// Signals for text and data ASCII lines
 t_pmod_cls_ascii_line_16 s_adxl_dat_ascii_line1;
 t_pmod_cls_ascii_line_16 s_adxl_dat_ascii_line2;
 t_pmod_cls_ascii_line_16 s_adxl_txt_ascii_line1;
 t_pmod_cls_ascii_line_16 s_adxl_txt_ascii_line2;
 
-/* Connections for inferring tri-state buffer for CLS SPI bus outputs. */
+// Connections for inferring tri-state buffer for CLS SPI bus outputs.
 logic so_pmod_cls_sck_o;
 logic so_pmod_cls_sck_t;
 logic so_pmod_cls_csn_o;
@@ -172,8 +170,8 @@ logic so_pmod_cls_csn_t;
 logic so_pmod_cls_copi_o;
 logic so_pmod_cls_copi_t;
 
-/* Extra MMCM signals for full port map to the MMCM primative,
-   where these signals will remain disconnected. */
+// Extra MMCM signals for full port map to the MMCM primative,
+// where these signals will remain disconnected.
 logic s_clk_ignore_clk0b;
 logic s_clk_ignore_clk1b;
 logic s_clk_ignore_clk2;
@@ -184,25 +182,27 @@ logic s_clk_ignore_clk4;
 logic s_clk_ignore_clk5;
 logic s_clk_ignore_clk6;
 logic s_clk_ignore_clkfboutb;
+// Extra MMCM signals for full port map to the MMCM primative, where
+// these signals are connected.
 logic s_clk_clkfbout;
 logic s_clk_pwrdwn;
 logic s_clk_resetin;
 
-/* Color palette signals to connect \ref led_palette_pulser to \ref
-   led_pwm_driver . */
+// Color palette signals to connect \ref led_palette_pulser to \ref
+// led_pwm_driver .
 logic [(4*8-1):0] s_color_led_red_value;
 logic [(4*8-1):0] s_color_led_green_value;
 logic [(4*8-1):0] s_color_led_blue_value;
 logic [(4*8-1):0] s_basic_led_lumin_value;
 
-/* UART TX signals to connect \ref uart_tx_only and \ref uart_tx_feed */
+// UART TX signals to connect \ref uart_tx_only and \ref uart_tx_feed
 t_pmod_acl2_txt_34 s_uart_dat_ascii_line;
 logic s_uart_tx_go;
 logic [7:0] s_uart_txdata;
 logic s_uart_txvalid;
 logic s_uart_txready;
 
-/* Values for display on the Pmod SSD */
+// Values for display on the Pmod SSD
 logic [3:0] s_thresh_value0;
 logic [3:0] s_thresh_value1;
 
@@ -277,24 +277,24 @@ MMCME2_BASE_inst (
 
 // End of MMCME2_BASE_inst instantiation
 
-/* Reset Synchronization for 20 MHz clock. */
+// Reset Synchronization for 20 MHz clock.
 arty_reset_synchronizer #() u_reset_synch_20mhz(
 	.i_clk_mhz(s_clk_20mhz),
 	.i_rstn_global(i_resetn),
 	.o_rst_mhz(s_rst_20mhz)
 	);
 
-/* Reset Synchronization for 7.37 MHz clock. */
+// Reset Synchronization for 7.37 MHz clock.
 arty_reset_synchronizer #() u_reset_synch_7_37mhz (
 	.i_clk_mhz(s_clk_7_37mhz),
 	.i_rstn_global(i_resetn),
 	.o_rst_mhz(s_rst_7_37mhz)
 	);
 
-/* 4x spi clock enable divider for PMOD CLS SCK output. No
-   generated clock constraint. The 20 MHz clock is divided
-   down to 2.5 MHz; and later divided down to 625 KHz on
-   the PMOD CLS bus. */
+// 4x spi clock enable divider for PMOD CLS SCK output. No
+// generated clock constraint. The 20 MHz clock is divided
+// down to 2.5 MHz; and later divided down to 625 KHz on
+// the PMOD CLS bus.
 clock_enable_divider #(
   .par_ce_divisor(8)
   ) u_2_5mhz_ce_divider (
@@ -331,7 +331,7 @@ multi_input_debounce #(
     .o_btns_deb(s_btn_deb)
     );
 
-/* LED PWM driver for color-mixed LED driving with variable intensity. */
+// LED PWM driver for color-mixed LED driving with variable intensity.
 led_pwm_driver #(
     .parm_color_led_count(4),
     .parm_basic_led_count(4),
@@ -350,7 +350,7 @@ led_pwm_driver #(
     .eo_basic_leds_l({eo_led7, eo_led6, eo_led5, eo_led4})
     );
 
-/* LED palette pulser to manage the display of the LEDs */
+// LED palette pulser to manage the display of the LEDs
 led_palette_pulser #(
   .parm_color_led_count(4),
   .parm_basic_led_count(4),
@@ -374,13 +374,13 @@ led_palette_pulser #(
   .i_sw1_selected(s_sw_deb[1])
   );
 
-/* Provide possible tri-state for later design revision for the PMOD ACL2 SPI
-   output ports. */
+// Provide possible tri-state for later design revision for the PMOD ACL2 SPI
+// output ports.
 assign eo_pmod_acl2_sck = so_pmod_acl2_sck_t ? 1'bz : so_pmod_acl2_sck_o;
 assign eo_pmod_acl2_csn = so_pmod_acl2_csn_t ? 1'bz : so_pmod_acl2_csn_o;
 assign eo_pmod_acl2_copi = so_pmod_acl2_copi_t ? 1'bz : so_pmod_acl2_copi_o;
 
-/* PMOD ACL2 Custom Driver instance. */
+// PMOD ACL2 Custom Driver instance.
 pmod_acl2_custom_driver #(
 	.parm_fast_simulation(parm_fast_simulation),
 	.FCLK(c_FCLK),
@@ -411,7 +411,7 @@ pmod_acl2_custom_driver #(
   .o_enum_inactive(s_thresh_value0)
   );
 
-/* Tester FSM to operate the states of the Pmod ACL2 based on switch input */
+// Tester FSM to operate the states of the Pmod ACL2 based on switch input
 acl_tester_fsm #(
   ) u_acl_tester_fsm (
   .i_clk_20mhz(s_clk_20mhz),
@@ -430,11 +430,11 @@ acl_tester_fsm #(
   .o_acl_cmd_soft_reset(s_acl2_cmd_soft_reset_acl2)
   );
 
-/* Capture the latest measurement value on VALID pulse and when the display is
-   idling in preparation of the next value to be displayed. When the display
-   stops idling, then hold the value for display so that the display does not
-   have its textual inputs changing while running the display update. This
-   value capture also holds for the UART TX output of the values. */
+// Capture the latest measurement value on VALID pulse and when the display is
+// idling in preparation of the next value to be displayed. When the display
+// stops idling, then hold the value for display so that the display does not
+// have its textual inputs changing while running the display update. This
+// value capture also holds for the UART TX output of the values.
 always_ff @(posedge s_clk_20mhz)
 begin: p_hold_measurements
 	if (s_rst_20mhz) s_hex_3axis_temp_measurements_display <= 64'd0;
@@ -444,7 +444,7 @@ begin: p_hold_measurements
 		end
 end : p_hold_measurements
 
-/* Stretch the Activity indication so it can be displayed as color LED 2. */
+// Stretch the Activity indication so it can be displayed as color LED 2.
 pulse_stretcher_synch #(
   .par_T_stretch_bits(25),
   .par_T_stretch_val(c_FCLK)
@@ -454,7 +454,7 @@ pulse_stretcher_synch #(
 		.i_rst(s_rst_20mhz),
 		.i_x(s_acl2_reg_status[4]));
 
-/* Stretch the Inactivity indication so it can be displayed as color LED 3. */
+// Stretch the Inactivity indication so it can be displayed as color LED 3.
 pulse_stretcher_synch #(
   .par_T_stretch_bits(25),
   .par_T_stretch_val(c_FCLK)
@@ -464,13 +464,13 @@ pulse_stretcher_synch #(
 		.i_rst(s_rst_20mhz),
 		.i_x(s_acl2_reg_status[5]));
 
-/* Tri-state outputs of PMOD CLS custom driver. */
+// Tri-state outputs of PMOD CLS custom driver.
 assign eo_pmod_cls_sck = so_pmod_cls_sck_t ? 1'bz : so_pmod_cls_sck_o;
 assign eo_pmod_cls_csn = so_pmod_cls_csn_t ? 1'bz : so_pmod_cls_csn_o;
 assign eo_pmod_cls_dq0 = so_pmod_cls_copi_t ? 1'bz : so_pmod_cls_copi_o;
 
-/* Instance of the PMOD CLS driver for 16x2 character LCD display for purposes
-   of an output display. */
+// Instance of the PMOD CLS driver for 16x2 character LCD display for purposes
+// of an output display.
 pmod_cls_custom_driver #(
 	.parm_fast_simulation(parm_fast_simulation),
 	.FCLK(c_FCLK),
@@ -494,8 +494,8 @@ pmod_cls_custom_driver #(
 	.i_dat_ascii_line1(s_cls_txt_ascii_line1),
 	.i_dat_ascii_line2(s_cls_txt_ascii_line2));
 
-/* Select the text to display on the Pmod CLS based om whether button 3
-   is or is not depressed. */
+// Select the text to display on the Pmod CLS based om whether button 3
+// is or is not depressed.
 always_ff @(posedge s_clk_20mhz)
 begin: p_reg_cls_line
   if (s_btn_deb == 4'b1000) begin
@@ -507,7 +507,7 @@ begin: p_reg_cls_line
   end
 end : p_reg_cls_line
 
-/* LCD Update FSM */
+// LCD Update FSM
 lcd_text_feed #(
   .parm_fast_simulation(parm_fast_simulation)
   ) u_lcd_text_feed (
@@ -521,7 +521,7 @@ lcd_text_feed #(
   .o_lcd_feed_is_idle(s_cls_feed_is_idle)
   );
 
-/* Measurement Readings to ASCII conversion */
+// Measurement Readings to ASCII conversion
 adxl362_readings_to_ascii #(
   ) u_adxl362_readings_to_ascii (
     .i_3axis_temp(s_hex_3axis_temp_measurements_display),
@@ -532,12 +532,12 @@ adxl362_readings_to_ascii #(
     .o_txt_ascii_line2(s_adxl_txt_ascii_line2)
     );
 
-/* TX ONLY UART function to print the two lines of the PMOD CLS output as a
-   single line on the dumb terminal, at the same rate as the PMOD CLS updates. */
-/* Assembly of UART text line. */
+// TX ONLY UART function to print the two lines of the PMOD CLS output as a
+// single line on the dumb terminal, at the same rate as the PMOD CLS updates.
+// Assembly of UART text line.
 
-/* Select the text to display on the UART Terminal based om whether button 2
-   is or is not depressed. */
+// Select the text to display on the UART Terminal based om whether button 2
+// is or is not depressed.
 always_ff @(posedge s_clk_20mhz)
 begin: p_reg_uart_line
   if (s_btn_deb == 4'b0100)
@@ -574,7 +574,7 @@ uart_tx_feed #(
   .i_dat_ascii_line(s_uart_dat_ascii_line)
   );
 
-/* A single PMOD SSD, two digit seven segment display */
+// A single PMOD SSD, two digit seven segment display
 one_pmod_ssd_display #() u_one_pmod_ssd_display (
   .i_clk_20mhz(s_clk_20mhz),
   .i_rst_20mhz(s_rst_20mhz),
