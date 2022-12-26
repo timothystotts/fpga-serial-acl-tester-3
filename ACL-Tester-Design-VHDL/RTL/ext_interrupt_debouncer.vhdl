@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020 Timothy Stotts
+-- Copyright (c) 2020,2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ architecture moore_fsm of ext_interrupt_debouncer is
 	attribute fsm_safe_state of s_intdeb_pr_state: signal is "default_state";
 
 	-- Debouncer Timer parameters.
-	constant c_intdeb_timer1_count : natural := 20;
+	constant c_intdeb_timer1_count : natural := 20; -- 1 microsecond time at 20 MHz
 	constant c_intdeb_timer1_max : natural := c_intdeb_timer1_count - 1;
 
 	-- Strategy #1 timer implementation.
@@ -69,7 +69,7 @@ architecture moore_fsm of ext_interrupt_debouncer is
 	-- Resulting debounced interrupt signal.
 	signal s_int_deb : std_logic;
 
-	-- Variables for synchronizing the external interrupt signal.
+	-- Variables for synchronizing the external interrupt input signal.
 	signal si_interrupt_meta : std_logic;
 	signal si_interrupt_sync : std_logic;
 begin
