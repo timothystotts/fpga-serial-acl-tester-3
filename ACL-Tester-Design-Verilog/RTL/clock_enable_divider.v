@@ -57,22 +57,22 @@ reg s_clk_div_ce;
 // downstream clock waveform.
 always @(posedge i_clk_mhz)
 begin: p_clk_div_cnt
-	if (i_rst_mhz) begin
-		s_clk_div_cnt <= 0;
-		s_clk_div_ce <= 1'b1;
-	end else
-		if (i_ce_mhz)
-			if (s_clk_div_cnt == c_clk_max) begin
-				s_clk_div_cnt <= 0;
-				s_clk_div_ce <= 1'b1;
-			end else begin
-				s_clk_div_cnt <= s_clk_div_cnt + 1;
-				s_clk_div_ce <= 1'b0;
-			end
-		else begin
-			s_clk_div_cnt <= s_clk_div_cnt;
-			s_clk_div_ce <= 1'b0;
-		end
+   if (i_rst_mhz) begin
+      s_clk_div_cnt <= 0;
+      s_clk_div_ce <= 1'b1;
+   end else
+      if (i_ce_mhz)
+         if (s_clk_div_cnt == c_clk_max) begin
+            s_clk_div_cnt <= 0;
+            s_clk_div_ce <= 1'b1;
+         end else begin
+            s_clk_div_cnt <= s_clk_div_cnt + 1;
+            s_clk_div_ce <= 1'b0;
+         end
+      else begin
+         s_clk_div_cnt <= s_clk_div_cnt;
+         s_clk_div_ce <= 1'b0;
+      end
 end
 
 assign o_ce_div = s_clk_div_ce;

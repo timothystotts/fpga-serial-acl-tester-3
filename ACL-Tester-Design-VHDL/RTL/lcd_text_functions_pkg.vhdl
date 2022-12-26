@@ -34,28 +34,28 @@ use ieee.numeric_std.all;
 library work;
 --------------------------------------------------------------------------------
 package lcd_text_functions_pkg is
-	function ascii_of_hdigit(bchex_val : std_logic_vector(3 downto 0))
-		return std_logic_vector;
+    function ascii_of_hdigit(bchex_val : std_logic_vector(3 downto 0))
+        return std_logic_vector;
 end package lcd_text_functions_pkg;
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 package body lcd_text_functions_pkg is
-	-- A re-entrant function that converts a 4-bit vector to an 8-bit ASCII
-	-- hexadecimal character.
-	function ascii_of_hdigit(bchex_val : std_logic_vector(3 downto 0))
-		return std_logic_vector is
-		variable v_bcd_nibble : unsigned(bchex_val'range);
-		variable v_ascii_byte : std_logic_vector(7 downto 0);
-	begin
-		v_bcd_nibble := unsigned(bchex_val);
-		if (v_bcd_nibble < 10) then
-			v_ascii_byte := std_logic_vector(unsigned'(x"30") + (unsigned'(x"0") & unsigned(bchex_val)));
-		else
-			v_ascii_byte := std_logic_vector(unsigned'(x"37") + (unsigned'(x"0") & unsigned(bchex_val)));
-		end if;
+    -- A re-entrant function that converts a 4-bit vector to an 8-bit ASCII
+    -- hexadecimal character.
+    function ascii_of_hdigit(bchex_val : std_logic_vector(3 downto 0))
+        return std_logic_vector is
+        variable v_bcd_nibble : unsigned(bchex_val'range);
+        variable v_ascii_byte : std_logic_vector(7 downto 0);
+    begin
+        v_bcd_nibble := unsigned(bchex_val);
+        if (v_bcd_nibble < 10) then
+            v_ascii_byte := std_logic_vector(unsigned'(x"30") + (unsigned'(x"0") & unsigned(bchex_val)));
+        else
+            v_ascii_byte := std_logic_vector(unsigned'(x"37") + (unsigned'(x"0") & unsigned(bchex_val)));
+        end if;
 
-		return v_ascii_byte;
-	end function ascii_of_hdigit;
+        return v_ascii_byte;
+    end function ascii_of_hdigit;
 end package body lcd_text_functions_pkg;
 --------------------------------------------------------------------------------

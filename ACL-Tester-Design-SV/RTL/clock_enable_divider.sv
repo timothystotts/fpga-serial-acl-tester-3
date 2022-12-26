@@ -32,14 +32,14 @@
 //------------------------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module clock_enable_divider
-	#(parameter
-		integer par_ce_divisor = 1000
-		)
-	(
-		output logic o_ce_div,
-		input logic i_clk_mhz, 
-		input logic i_rst_mhz,
-		input logic i_ce_mhz);
+    #(parameter
+        integer par_ce_divisor = 1000
+        )
+    (
+        output logic o_ce_div,
+        input logic i_clk_mhz, 
+        input logic i_rst_mhz,
+        input logic i_ce_mhz);
 
 // Part 2: Declarations---------------------------------------------------------
 timeunit 1ns;
@@ -65,25 +65,25 @@ logic s_clk_div_ce;
 // clock enable waveform.
 always_ff @(posedge i_clk_mhz)
 begin: p_clk_div_cnt
-	if (i_rst_mhz) begin
-		s_clk_div_cnt <= 0;
-		s_clk_div_ce <= 1'b1;
-	end else
-		if (i_ce_mhz)
-			if (s_clk_div_cnt == c_clk_max) begin : if_counter_max_reset
-				s_clk_div_cnt <= 0;
-				s_clk_div_ce <= 1'b1;
-			end :  if_counter_max_reset
-			
-			else begin : if_counter_lt_max_inc
-				s_clk_div_cnt <= s_clk_div_cnt + 1;
-				s_clk_div_ce <= 1'b0;
-			end : if_counter_lt_max_inc
+    if (i_rst_mhz) begin
+        s_clk_div_cnt <= 0;
+        s_clk_div_ce <= 1'b1;
+    end else
+        if (i_ce_mhz)
+            if (s_clk_div_cnt == c_clk_max) begin : if_counter_max_reset
+                s_clk_div_cnt <= 0;
+                s_clk_div_ce <= 1'b1;
+            end :  if_counter_max_reset
+            
+            else begin : if_counter_lt_max_inc
+                s_clk_div_cnt <= s_clk_div_cnt + 1;
+                s_clk_div_ce <= 1'b0;
+            end : if_counter_lt_max_inc
 
-		else begin : if_hold_ce_low
-			s_clk_div_cnt <= s_clk_div_cnt;
-			s_clk_div_ce <= 1'b0;
-		end : if_hold_ce_low
+        else begin : if_hold_ce_low
+            s_clk_div_cnt <= s_clk_div_cnt;
+            s_clk_div_ce <= 1'b0;
+        end : if_hold_ce_low
 
 end : p_clk_div_cnt
 

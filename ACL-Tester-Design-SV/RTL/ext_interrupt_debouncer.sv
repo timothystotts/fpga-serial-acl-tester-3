@@ -32,10 +32,10 @@
 //Timed Moore machine with timer control strategy #1
 //Part 1: Module header:--------------------------------------------------------
 module ext_interrupt_debouncer(
-	output logic o_int_deb,
-	input logic i_clk_20mhz,
-	input logic i_rst_20mhz,
-	input logic ei_interrupt);
+    output logic o_int_deb,
+    input logic i_clk_20mhz,
+    input logic i_rst_20mhz,
+    input logic ei_interrupt);
 
 // Part 2: Declarations---------------------------------------------------------
 timeunit 1ns;
@@ -50,7 +50,7 @@ timeprecision 1ps;
 (* fsm_encoding = "gray" *)
 (* fsm_safe_state = "default_state" *)
 typedef enum logic [(`c_intdeb_state_bits - 1):0] {
-	ST_A, ST_B, ST_C, ST_D} t_intdeb_state;
+    ST_A, ST_B, ST_C, ST_D} t_intdeb_state;
 t_intdeb_state s_intdeb_pr_state;
 t_intdeb_state s_intdeb_nx_state;
 
@@ -78,24 +78,24 @@ logic si_interrupt_sync;
 // according to design).
 always_ff @(posedge i_clk_20mhz)
 begin: p_sync_interrupt
-	si_interrupt_sync <= si_interrupt_meta;
-	si_interrupt_meta <= ei_interrupt;
+    si_interrupt_sync <= si_interrupt_meta;
+    si_interrupt_meta <= ei_interrupt;
 end : p_sync_interrupt
 
 // Timer with strategy #1 implementation. The timer re-zeroes on a debouncer FSM
 // state transition; and it caps at the constant parameter c_tmax.
 always_ff @(posedge i_clk_20mhz)
 begin: p_fsm_timer
-	if (i_rst_20mhz)
-		s_t <= 0;
-	else
-		if (s_intdeb_pr_state != s_intdeb_nx_state) begin : if_chg_state
-			s_t <= 0;
-		end : if_chg_state
+    if (i_rst_20mhz)
+        s_t <= 0;
+    else
+        if (s_intdeb_pr_state != s_intdeb_nx_state) begin : if_chg_state
+            s_t <= 0;
+        end : if_chg_state
 
-		else if (s_t != c_tmax) begin : if_not_timer_max
-			s_t <= s_t + 1;
-		end : if_not_timer_max
+        else if (s_t != c_tmax) begin : if_not_timer_max
+            s_t <= s_t + 1;
+        end : if_not_timer_max
 
 end : p_fsm_timer
 
@@ -103,10 +103,10 @@ end : p_fsm_timer
 // current state, on the positive edge of the clock.
 always_ff @(posedge i_clk_20mhz)
 begin: p_fsm_state
-	if (i_rst_20mhz)
-		s_intdeb_pr_state <= ST_A;
-	else
-		s_intdeb_pr_state <= s_intdeb_nx_state;
+    if (i_rst_20mhz)
+        s_intdeb_pr_state <= ST_A;
+    else
+        s_intdeb_pr_state <= s_intdeb_nx_state;
 end : p_fsm_state
 
 // FSM combinatorial logic providing a single output value \ref s_int_deb,
@@ -114,44 +114,44 @@ end : p_fsm_state
 // positive clock edge.
 always_comb
 begin: p_fsm_nx_output
-	case (s_intdeb_pr_state)
-		ST_B: begin
-			// State B. Hold the debounced signal at zero. If the stable input ever
-			// transitions back to zero, then transition back to State A. If the
-			// timer elapses for a full duration of the signal being one, then
-			// transition the state to State C.
-			s_int_deb = 1'b0;
-			if (! si_interrupt_sync) s_intdeb_nx_state = ST_A;
-			else if (s_t >= c_t1 - 2) s_intdeb_nx_state = ST_C;
-			else s_intdeb_nx_state = ST_B;
-		end
-		ST_C: begin
-			// State C. Hold the debounced signal at one. If the stable input value
-			// transitions to zero, then transition to State D to count a timer
-			// time while waiting to change the debounced output to zero.
-			s_int_deb = 1'b1;
-			if (! si_interrupt_sync) s_intdeb_nx_state = ST_D;
-			else s_intdeb_nx_state = ST_C;
-		end
-		ST_D: begin
-			// State D. Hold the debounced signal at one. If the stable input ever
-			// transitions back to one, then transition back to State C. If the
-			// timer elapses for a full duration of the signal being zero, then
-			// transition the state to State A.
-			s_int_deb = 1'b1;
-			if (si_interrupt_sync) s_intdeb_nx_state = ST_C;
-			else if (s_t >= c_t1 - 2) s_intdeb_nx_state = ST_A;
-			else s_intdeb_nx_state = ST_D;
-		end
-		default: begin // ST_A
-			// State A. Hold the debounced signal at zero. If the stable input value
-			// transitions to one, then transition to State B to count a timer
-			// time while waiting to change the debounced output to one.
-			s_int_deb = 1'b0;
-			if (si_interrupt_sync) s_intdeb_nx_state = ST_B;
-			else s_intdeb_nx_state = ST_A;
-		end
-	endcase
+    case (s_intdeb_pr_state)
+        ST_B: begin
+            // State B. Hold the debounced signal at zero. If the stable input ever
+            // transitions back to zero, then transition back to State A. If the
+            // timer elapses for a full duration of the signal being one, then
+            // transition the state to State C.
+            s_int_deb = 1'b0;
+            if (! si_interrupt_sync) s_intdeb_nx_state = ST_A;
+            else if (s_t >= c_t1 - 2) s_intdeb_nx_state = ST_C;
+            else s_intdeb_nx_state = ST_B;
+        end
+        ST_C: begin
+            // State C. Hold the debounced signal at one. If the stable input value
+            // transitions to zero, then transition to State D to count a timer
+            // time while waiting to change the debounced output to zero.
+            s_int_deb = 1'b1;
+            if (! si_interrupt_sync) s_intdeb_nx_state = ST_D;
+            else s_intdeb_nx_state = ST_C;
+        end
+        ST_D: begin
+            // State D. Hold the debounced signal at one. If the stable input ever
+            // transitions back to one, then transition back to State C. If the
+            // timer elapses for a full duration of the signal being zero, then
+            // transition the state to State A.
+            s_int_deb = 1'b1;
+            if (si_interrupt_sync) s_intdeb_nx_state = ST_C;
+            else if (s_t >= c_t1 - 2) s_intdeb_nx_state = ST_A;
+            else s_intdeb_nx_state = ST_D;
+        end
+        default: begin // ST_A
+            // State A. Hold the debounced signal at zero. If the stable input value
+            // transitions to one, then transition to State B to count a timer
+            // time while waiting to change the debounced output to one.
+            s_int_deb = 1'b0;
+            if (si_interrupt_sync) s_intdeb_nx_state = ST_B;
+            else s_intdeb_nx_state = ST_A;
+        end
+    endcase
 end : p_fsm_nx_output
 
 // The debounced interrupt produced by the combinatorial logic is output here

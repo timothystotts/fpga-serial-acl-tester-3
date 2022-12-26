@@ -38,60 +38,60 @@
 //Multiple Moore Machines
 //Part 1: Module header:--------------------------------------------------------
 module fpga_serial_acl_tester_a7100
-	import pmod_stand_spi_solo_pkg::*;
-	#(parameter
-		integer parm_fast_simulation = 0)
-	(
-	// external clock and active-low reset
-	input logic CLK100MHZ,
-	input logic i_resetn,
-	// PMOD ACL2 SPI bus 4-wire and two interrupt signals
-	output logic eo_pmod_acl2_sck,
-	output logic eo_pmod_acl2_csn,
-	output logic eo_pmod_acl2_copi,
-	input logic ei_pmod_acl2_cipo,
-	input logic ei_pmod_acl2_int1,
-	input logic ei_pmod_acl2_int2,
-	// blue emitters of the multicolor LEDs
-	output logic eo_led0_b,
-	output logic eo_led1_b,
-	output logic eo_led2_b,
-	output logic eo_led3_b,
-	// red emitters of the multicolor LEDs
-	output logic eo_led0_r,
-	output logic eo_led1_r,
-	output logic eo_led2_r,
-	output logic eo_led3_r,
-	// green emitters of the multicolor LEDs
-	output logic eo_led0_g,
-	output logic eo_led1_g,
-	output logic eo_led2_g,
-	output logic eo_led3_g,
-	// green emitters of the basic LEDs
-	output logic eo_led4,
-	output logic eo_led5,
-	output logic eo_led6,
-	output logic eo_led7,
-	// four switches
-	input logic ei_sw0,
-	input logic ei_sw1,
-	input logic ei_sw2,
-	input logic ei_sw3,
-	// four buttons
-	input logic ei_btn0,
-	input logic ei_btn1,
-	input logic ei_btn2,
-	input logic ei_btn3,
-	// PMOD CLS SPI bus 4-wire
-	output logic eo_pmod_cls_csn,
-	output logic eo_pmod_cls_sck,
-	output logic eo_pmod_cls_dq0,
-	input logic ei_pmod_cls_dq1,
-	// Arty A7-100T UART TX and RX signals
-	output logic eo_uart_tx,
-	input logic ei_uart_rx,
-	// PMOD SSD direct GPIO
-	output logic [7:0] eo_ssd_pmod0);
+  import pmod_stand_spi_solo_pkg::*;
+  #(parameter
+    integer parm_fast_simulation = 0)
+  (
+  // external clock and active-low reset
+  input logic CLK100MHZ,
+  input logic i_resetn,
+  // PMOD ACL2 SPI bus 4-wire and two interrupt signals
+  output logic eo_pmod_acl2_sck,
+  output logic eo_pmod_acl2_csn,
+  output logic eo_pmod_acl2_copi,
+  input logic ei_pmod_acl2_cipo,
+  input logic ei_pmod_acl2_int1,
+  input logic ei_pmod_acl2_int2,
+  // blue emitters of the multicolor LEDs
+  output logic eo_led0_b,
+  output logic eo_led1_b,
+  output logic eo_led2_b,
+  output logic eo_led3_b,
+  // red emitters of the multicolor LEDs
+  output logic eo_led0_r,
+  output logic eo_led1_r,
+  output logic eo_led2_r,
+  output logic eo_led3_r,
+  // green emitters of the multicolor LEDs
+  output logic eo_led0_g,
+  output logic eo_led1_g,
+  output logic eo_led2_g,
+  output logic eo_led3_g,
+  // green emitters of the basic LEDs
+  output logic eo_led4,
+  output logic eo_led5,
+  output logic eo_led6,
+  output logic eo_led7,
+  // four switches
+  input logic ei_sw0,
+  input logic ei_sw1,
+  input logic ei_sw2,
+  input logic ei_sw3,
+  // four buttons
+  input logic ei_btn0,
+  input logic ei_btn1,
+  input logic ei_btn2,
+  input logic ei_btn3,
+  // PMOD CLS SPI bus 4-wire
+  output logic eo_pmod_cls_csn,
+  output logic eo_pmod_cls_sck,
+  output logic eo_pmod_cls_dq0,
+  input logic ei_pmod_cls_dq1,
+  // Arty A7-100T UART TX and RX signals
+  output logic eo_uart_tx,
+  input logic ei_uart_rx,
+  // PMOD SSD direct GPIO
+  output logic [7:0] eo_ssd_pmod0);
 
 //Part 2: Declarations----------------------------------------------------------
 timeunit 1ns;
@@ -279,17 +279,17 @@ MMCME2_BASE_inst (
 
 // Reset Synchronization for 20 MHz clock.
 arty_reset_synchronizer #() u_reset_synch_20mhz(
-	.i_clk_mhz(s_clk_20mhz),
-	.i_rstn_global(i_resetn),
-	.o_rst_mhz(s_rst_20mhz)
-	);
+  .i_clk_mhz(s_clk_20mhz),
+  .i_rstn_global(i_resetn),
+  .o_rst_mhz(s_rst_20mhz)
+  );
 
 // Reset Synchronization for 7.37 MHz clock.
 arty_reset_synchronizer #() u_reset_synch_7_37mhz (
-	.i_clk_mhz(s_clk_7_37mhz),
-	.i_rstn_global(i_resetn),
-	.o_rst_mhz(s_rst_7_37mhz)
-	);
+  .i_clk_mhz(s_clk_7_37mhz),
+  .i_rstn_global(i_resetn),
+  .o_rst_mhz(s_rst_7_37mhz)
+  );
 
 // 4x spi clock enable divider for PMOD CLS SCK output. No
 // generated clock constraint. The 20 MHz clock is divided
@@ -298,10 +298,10 @@ arty_reset_synchronizer #() u_reset_synch_7_37mhz (
 clock_enable_divider #(
   .par_ce_divisor(8)
   ) u_2_5mhz_ce_divider (
-	.o_ce_div(s_ce_2_5mhz),
-	.i_clk_mhz(s_clk_20mhz),
-	.i_rst_mhz(s_rst_20mhz),
-	.i_ce_mhz(1'b1));
+  .o_ce_div(s_ce_2_5mhz),
+  .i_clk_mhz(s_clk_20mhz),
+  .i_rst_mhz(s_rst_20mhz),
+  .i_ce_mhz(1'b1));
 
 // Synchronize and debounce the four input switches on the Arty A7 to be
 // debounced and exclusive of each other (ignored if more than one
@@ -382,30 +382,30 @@ assign eo_pmod_acl2_copi = so_pmod_acl2_copi_t ? 1'bz : so_pmod_acl2_copi_o;
 
 // PMOD ACL2 Custom Driver instance.
 pmod_acl2_custom_driver #(
-	.parm_fast_simulation(parm_fast_simulation),
-	.FCLK(c_FCLK),
-	.parm_ext_spi_clk_ratio(4)
-	) u_pmod_acl2_custom_driver (
-	.i_clk_20mhz(s_clk_20mhz),
-	.i_rst_20mhz(s_rst_20mhz),
-	.eo_sck_t(so_pmod_acl2_sck_t),
-	.eo_sck_o(so_pmod_acl2_sck_o),
-	.eo_csn_t(so_pmod_acl2_csn_t),
-	.eo_csn_o(so_pmod_acl2_csn_o),
-	.eo_copi_t(so_pmod_acl2_copi_t),
-	.eo_copi_o(so_pmod_acl2_copi_o),
-	.ei_cipo(ei_pmod_acl2_cipo),
-	.ei_int1(ei_pmod_acl2_int1),
-	.ei_int2(ei_pmod_acl2_int2),
-	.o_command_ready(s_acl2_command_ready),
-	.i_cmd_init_linked_mode(s_acl2_cmd_init_linked_mode),
-	.i_cmd_start_linked_mode(s_acl2_cmd_start_linked_mode),
-	.i_cmd_init_measur_mode(s_acl2_cmd_init_measur_mode),
-	.i_cmd_start_measur_mode(s_acl2_cmd_start_measur_mode),
-	.i_cmd_soft_reset_acl2(s_acl2_cmd_soft_reset_acl2),
-	.o_data_3axis_temp(s_hex_3axis_temp_measurements_final),
-	.o_data_valid(s_hex_3axis_temp_measurements_valid),
-	.o_reg_status(s_acl2_reg_status),
+  .parm_fast_simulation(parm_fast_simulation),
+  .FCLK(c_FCLK),
+  .parm_ext_spi_clk_ratio(4)
+  ) u_pmod_acl2_custom_driver (
+  .i_clk_20mhz(s_clk_20mhz),
+  .i_rst_20mhz(s_rst_20mhz),
+  .eo_sck_t(so_pmod_acl2_sck_t),
+  .eo_sck_o(so_pmod_acl2_sck_o),
+  .eo_csn_t(so_pmod_acl2_csn_t),
+  .eo_csn_o(so_pmod_acl2_csn_o),
+  .eo_copi_t(so_pmod_acl2_copi_t),
+  .eo_copi_o(so_pmod_acl2_copi_o),
+  .ei_cipo(ei_pmod_acl2_cipo),
+  .ei_int1(ei_pmod_acl2_int1),
+  .ei_int2(ei_pmod_acl2_int2),
+  .o_command_ready(s_acl2_command_ready),
+  .i_cmd_init_linked_mode(s_acl2_cmd_init_linked_mode),
+  .i_cmd_start_linked_mode(s_acl2_cmd_start_linked_mode),
+  .i_cmd_init_measur_mode(s_acl2_cmd_init_measur_mode),
+  .i_cmd_start_measur_mode(s_acl2_cmd_start_measur_mode),
+  .i_cmd_soft_reset_acl2(s_acl2_cmd_soft_reset_acl2),
+  .o_data_3axis_temp(s_hex_3axis_temp_measurements_final),
+  .o_data_valid(s_hex_3axis_temp_measurements_valid),
+  .o_reg_status(s_acl2_reg_status),
   .i_btn_deb(s_btn_deb[1-:2]),
   .o_enum_active(s_thresh_value1),
   .o_enum_inactive(s_thresh_value0)
@@ -437,32 +437,32 @@ acl_tester_fsm #(
 // value capture also holds for the UART TX output of the values.
 always_ff @(posedge s_clk_20mhz)
 begin: p_hold_measurements
-	if (s_rst_20mhz) s_hex_3axis_temp_measurements_display <= 64'd0;
-	else
-		if (s_hex_3axis_temp_measurements_valid && s_cls_feed_is_idle) begin
-			s_hex_3axis_temp_measurements_display <= s_hex_3axis_temp_measurements_final;
-		end
+  if (s_rst_20mhz) s_hex_3axis_temp_measurements_display <= 64'd0;
+  else
+    if (s_hex_3axis_temp_measurements_valid && s_cls_feed_is_idle) begin
+      s_hex_3axis_temp_measurements_display <= s_hex_3axis_temp_measurements_final;
+    end
 end : p_hold_measurements
 
 // Stretch the Activity indication so it can be displayed as color LED 2.
 pulse_stretcher_synch #(
   .par_T_stretch_bits(25),
   .par_T_stretch_val(c_FCLK)
-  )	u_pulse_stretcher_activity (
-		.o_y(s_acl2_reg_status_activity_stretched),
-		.i_clk(s_clk_20mhz),
-		.i_rst(s_rst_20mhz),
-		.i_x(s_acl2_reg_status[4]));
+  ) u_pulse_stretcher_activity (
+    .o_y(s_acl2_reg_status_activity_stretched),
+    .i_clk(s_clk_20mhz),
+    .i_rst(s_rst_20mhz),
+    .i_x(s_acl2_reg_status[4]));
 
 // Stretch the Inactivity indication so it can be displayed as color LED 3.
 pulse_stretcher_synch #(
   .par_T_stretch_bits(25),
   .par_T_stretch_val(c_FCLK)
   ) u_pulse_stretcher_inactivity (
-		.o_y(s_acl2_reg_status_inactivity_stretched),
-		.i_clk(s_clk_20mhz),
-		.i_rst(s_rst_20mhz),
-		.i_x(s_acl2_reg_status[5]));
+    .o_y(s_acl2_reg_status_inactivity_stretched),
+    .i_clk(s_clk_20mhz),
+    .i_rst(s_rst_20mhz),
+    .i_x(s_acl2_reg_status[5]));
 
 // Tri-state outputs of PMOD CLS custom driver.
 assign eo_pmod_cls_sck = so_pmod_cls_sck_t ? 1'bz : so_pmod_cls_sck_o;
@@ -472,27 +472,27 @@ assign eo_pmod_cls_dq0 = so_pmod_cls_copi_t ? 1'bz : so_pmod_cls_copi_o;
 // Instance of the PMOD CLS driver for 16x2 character LCD display for purposes
 // of an output display.
 pmod_cls_custom_driver #(
-	.parm_fast_simulation(parm_fast_simulation),
-	.FCLK(c_FCLK),
-	.FCLK_ce(2500000),
-	.parm_ext_spi_clk_ratio(32)
-	) u_pmod_cls_custom_driver (
-	.i_clk_20mhz(s_clk_20mhz),
-	.i_rst_20mhz(s_rst_20mhz),
-	.i_ce_2_5mhz(s_ce_2_5mhz),
-	.eo_sck_t(so_pmod_cls_sck_t),
-	.eo_sck_o(so_pmod_cls_sck_o),
-	.eo_csn_t(so_pmod_cls_csn_t),
-	.eo_csn_o(so_pmod_cls_csn_o),
-	.eo_copi_t(so_pmod_cls_copi_t),
-	.eo_copi_o(so_pmod_cls_copi_o),
-	.ei_cipo(ei_pmod_cls_dq1),
-	.o_command_ready(s_cls_command_ready),
-	.i_cmd_wr_clear_display(s_cls_wr_clear_display),
-	.i_cmd_wr_text_line1(s_cls_wr_text_line1),
-	.i_cmd_wr_text_line2(s_cls_wr_text_line2),
-	.i_dat_ascii_line1(s_cls_txt_ascii_line1),
-	.i_dat_ascii_line2(s_cls_txt_ascii_line2));
+  .parm_fast_simulation(parm_fast_simulation),
+  .FCLK(c_FCLK),
+  .FCLK_ce(2500000),
+  .parm_ext_spi_clk_ratio(32)
+  ) u_pmod_cls_custom_driver (
+  .i_clk_20mhz(s_clk_20mhz),
+  .i_rst_20mhz(s_rst_20mhz),
+  .i_ce_2_5mhz(s_ce_2_5mhz),
+  .eo_sck_t(so_pmod_cls_sck_t),
+  .eo_sck_o(so_pmod_cls_sck_o),
+  .eo_csn_t(so_pmod_cls_csn_t),
+  .eo_csn_o(so_pmod_cls_csn_o),
+  .eo_copi_t(so_pmod_cls_copi_t),
+  .eo_copi_o(so_pmod_cls_copi_o),
+  .ei_cipo(ei_pmod_cls_dq1),
+  .o_command_ready(s_cls_command_ready),
+  .i_cmd_wr_clear_display(s_cls_wr_clear_display),
+  .i_cmd_wr_text_line1(s_cls_wr_text_line1),
+  .i_cmd_wr_text_line2(s_cls_wr_text_line2),
+  .i_dat_ascii_line1(s_cls_txt_ascii_line1),
+  .i_dat_ascii_line2(s_cls_txt_ascii_line2));
 
 // Select the text to display on the Pmod CLS based om whether button 3
 // is or is not depressed.
@@ -551,17 +551,17 @@ end : p_reg_uart_line
 assign s_uart_tx_go = s_cls_wr_clear_display;
 
 uart_tx_only #(
-	.BAUD(115200)
+  .BAUD(115200)
   ) u_uart_tx_only (
-	.i_clk_20mhz  (s_clk_20mhz),
-	.i_rst_20mhz  (s_rst_20mhz),
-	.i_clk_7_37mhz(s_clk_7_37mhz),
-	.i_rst_7_37mhz(s_rst_7_37mhz),
-	.eo_uart_tx   (eo_uart_tx),
-	.i_tx_data    (s_uart_txdata),
-	.i_tx_valid   (s_uart_txvalid),
-	.o_tx_ready   (s_uart_txready)
-	);
+  .i_clk_20mhz  (s_clk_20mhz),
+  .i_rst_20mhz  (s_rst_20mhz),
+  .i_clk_7_37mhz(s_clk_7_37mhz),
+  .i_rst_7_37mhz(s_rst_7_37mhz),
+  .eo_uart_tx   (eo_uart_tx),
+  .i_tx_data    (s_uart_txdata),
+  .i_tx_valid   (s_uart_txvalid),
+  .o_tx_ready   (s_uart_txready)
+  );
 
 uart_tx_feed #(
   ) u_uart_tx_feed (

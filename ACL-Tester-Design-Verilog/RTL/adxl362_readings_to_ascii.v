@@ -30,8 +30,8 @@
 //Combinatorial measurement registers to ASCII text conversion.-----------------
 //Part 1: Module header:--------------------------------------------------------
 module adxl362_readings_to_ascii(i_3axis_temp, i_reading_inactive,
-	o_dat_ascii_line1, o_dat_ascii_line2, o_txt_ascii_line1,
-	o_txt_ascii_line2);
+   o_dat_ascii_line1, o_dat_ascii_line2, o_txt_ascii_line1,
+   o_txt_ascii_line2);
 
 input wire [(8*8-1):0] i_3axis_temp;
 input wire i_reading_inactive;
@@ -44,10 +44,10 @@ output wire [(16*8-1):0] o_txt_ascii_line2;
 // A re-entrant function that converts a 4-bit part-select to an 8-bit ASCII
 // hexadecimal character.
 function automatic [7:0] ascii_of_hdigit(input [3:0] bchex_val);
-	begin
-		if (bchex_val < 10) ascii_of_hdigit = 8'h30 + {4'h0, bchex_val};
-		else ascii_of_hdigit = 8'h37 + {4'h0, bchex_val};
-	end
+   begin
+      if (bchex_val < 10) ascii_of_hdigit = 8'h30 + {4'h0, bchex_val};
+      else ascii_of_hdigit = 8'h37 + {4'h0, bchex_val};
+   end
 endfunction
 
 // Connections for reparse of the eight PMOD ACL2 measurement reading bytes
@@ -228,71 +228,71 @@ assign s_char_temp_m0 = ascii_of_hdigit(s_dat_temp_m0[3-:4]);
 // Assemblly of ASCII Line 1 to display on the PMOD CLS.
 // ASCII Line:  "X:____  Y:____  " or "X:0123  Y:ABCD  "
 assign o_dat_ascii_line1 = (i_reading_inactive)
-								?
-								{8'h58, 8'h3A,
-								8'h5F, 8'h5F, 8'h5F, 8'h5F,
-								8'h20, 8'h20, 8'h59, 8'h3A, 
-								8'h5F, 8'h5F, 8'h5F, 8'h5F,
-							    8'h20, 8'h20}
-								:
-								{8'h58, 8'h3A, s_char_xaxis_msb_3,
-								s_char_xaxis_msb_2, s_char_xaxis_lsb_1,
-								s_char_xaxis_lsb_0, 8'h20, 8'h20,
-								8'h59, 8'h3A, s_char_yaxis_msb_3,
-								s_char_yaxis_msb_2, s_char_yaxis_lsb_1,
-								s_char_yaxis_lsb_0, 8'h20, 8'h20}
-								;
+                        ?
+                        {8'h58, 8'h3A,
+                        8'h5F, 8'h5F, 8'h5F, 8'h5F,
+                        8'h20, 8'h20, 8'h59, 8'h3A, 
+                        8'h5F, 8'h5F, 8'h5F, 8'h5F,
+                         8'h20, 8'h20}
+                        :
+                        {8'h58, 8'h3A, s_char_xaxis_msb_3,
+                        s_char_xaxis_msb_2, s_char_xaxis_lsb_1,
+                        s_char_xaxis_lsb_0, 8'h20, 8'h20,
+                        8'h59, 8'h3A, s_char_yaxis_msb_3,
+                        s_char_yaxis_msb_2, s_char_yaxis_lsb_1,
+                        s_char_yaxis_lsb_0, 8'h20, 8'h20}
+                        ;
 
 // ASCII line: "X______ Y______ " or "X-0.123 Y 0.345 "
 assign o_txt_ascii_line1 = (i_reading_inactive)
-								?
-								{8'h58, 8'h5F,
-								8'h5F, 8'h5F, 8'h5F, 8'h5F,
-								8'h5F, 8'h20, 8'h59, 8'h5F, 
-								8'h5F, 8'h5F, 8'h5F, 8'h5F,
-							    8'h5F, 8'h20}
-								:
-								{8'h58, s_char_xaxis_sg,
-								s_char_xaxis_m0, 8'h2E, s_char_xaxis_f0,
-								s_char_xaxis_f1, s_char_xaxis_f2, 8'h20,
-								8'h59, s_char_yaxis_sg,
-								s_char_yaxis_m0, 8'h2E, s_char_yaxis_f0,
-								s_char_yaxis_f1, s_char_yaxis_f2, 8'h20}
-								;
+                        ?
+                        {8'h58, 8'h5F,
+                        8'h5F, 8'h5F, 8'h5F, 8'h5F,
+                        8'h5F, 8'h20, 8'h59, 8'h5F, 
+                        8'h5F, 8'h5F, 8'h5F, 8'h5F,
+                         8'h5F, 8'h20}
+                        :
+                        {8'h58, s_char_xaxis_sg,
+                        s_char_xaxis_m0, 8'h2E, s_char_xaxis_f0,
+                        s_char_xaxis_f1, s_char_xaxis_f2, 8'h20,
+                        8'h59, s_char_yaxis_sg,
+                        s_char_yaxis_m0, 8'h2E, s_char_yaxis_f0,
+                        s_char_yaxis_f1, s_char_yaxis_f2, 8'h20}
+                        ;
 
 // Assemblly of ASCII Line 2 to display on the PMOD CLS.
 // ASCII Line:  "Z:____  T:____  " or "Z:0123  T:ABCD  "
 assign o_dat_ascii_line2 = (i_reading_inactive)
-								?
-								{8'h5A, 8'h3A,
-								8'h5F, 8'h5F, 8'h5F, 8'h5F,
-								8'h20, 8'h20, 8'h54, 8'h3A,
-								8'h5F, 8'h5F, 8'h5F, 8'h5F,
-								8'h20, 8'h20}
-								:
-								{8'h5A, 8'h3A, s_char_zaxis_msb_3,
-								s_char_zaxis_msb_2, s_char_zaxis_lsb_1,
-								s_char_zaxis_lsb_0, 8'h20, 8'h20,
-								8'h54, 8'h3A, s_char_temp_msb_3,
-								s_char_temp_msb_2, s_char_temp_lsb_1,
-								s_char_temp_lsb_0, 8'h20, 8'h20}
-								;
+                        ?
+                        {8'h5A, 8'h3A,
+                        8'h5F, 8'h5F, 8'h5F, 8'h5F,
+                        8'h20, 8'h20, 8'h54, 8'h3A,
+                        8'h5F, 8'h5F, 8'h5F, 8'h5F,
+                        8'h20, 8'h20}
+                        :
+                        {8'h5A, 8'h3A, s_char_zaxis_msb_3,
+                        s_char_zaxis_msb_2, s_char_zaxis_lsb_1,
+                        s_char_zaxis_lsb_0, 8'h20, 8'h20,
+                        8'h54, 8'h3A, s_char_temp_msb_3,
+                        s_char_temp_msb_2, s_char_temp_lsb_1,
+                        s_char_temp_lsb_0, 8'h20, 8'h20}
+                        ;
 
 // ASCII line: "Z______ T______ " or "Z 1.123 T5201   "
 assign o_txt_ascii_line2 = (i_reading_inactive)
-								?
-								{8'h5A, 8'h5F,
-								8'h5F, 8'h5F, 8'h5F, 8'h5F,
-								8'h5F, 8'h20, 8'h54, 8'h5F, 
-								8'h5F, 8'h5F, 8'h5F, 8'h5F,
-							    8'h20, 8'h20}
-								:
-								{8'h5A, s_char_zaxis_sg,
-								s_char_zaxis_m0, 8'h2E, s_char_zaxis_f0,
-								s_char_zaxis_f1, s_char_zaxis_f2, 8'h20,
-								8'h54, s_char_temp_m3, s_char_temp_m2,
-								s_char_temp_m1, s_char_temp_m0, 8'h20, 8'h20, 8'h20}
-								;
+                        ?
+                        {8'h5A, 8'h5F,
+                        8'h5F, 8'h5F, 8'h5F, 8'h5F,
+                        8'h5F, 8'h20, 8'h54, 8'h5F, 
+                        8'h5F, 8'h5F, 8'h5F, 8'h5F,
+                         8'h20, 8'h20}
+                        :
+                        {8'h5A, s_char_zaxis_sg,
+                        s_char_zaxis_m0, 8'h2E, s_char_zaxis_f0,
+                        s_char_zaxis_f1, s_char_zaxis_f2, 8'h20,
+                        8'h54, s_char_temp_m3, s_char_temp_m2,
+                        s_char_temp_m1, s_char_temp_m0, 8'h20, 8'h20, 8'h20}
+                        ;
 
 endmodule
 //------------------------------------------------------------------------------

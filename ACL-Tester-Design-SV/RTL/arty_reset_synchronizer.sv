@@ -36,9 +36,9 @@
 //Reset Synchronizer------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module arty_reset_synchronizer(
-	input logic i_clk_mhz,
-	input logic i_rstn_global,
-	output logic o_rst_mhz);
+    input logic i_clk_mhz,
+    input logic i_rstn_global,
+    output logic o_rst_mhz);
 
 //Part 2: Declarations----------------------------------------------------------
 timeunit 1ns;
@@ -51,10 +51,10 @@ logic [(c_RESET_STAGES - 1):0] s_rst_shift;
 //Part 3: Statements------------------------------------------------------------
 always_ff @(posedge i_clk_mhz, negedge i_rstn_global)
 begin: p_sync_reset_shift
-	if (! i_rstn_global)
-		s_rst_shift <= { c_RESET_STAGES{1'b1} };
-	else
-		s_rst_shift <= {s_rst_shift[(c_RESET_STAGES - 2)-:(c_RESET_STAGES - 1)], 1'b0};
+    if (! i_rstn_global)
+        s_rst_shift <= { c_RESET_STAGES{1'b1} };
+    else
+        s_rst_shift <= {s_rst_shift[(c_RESET_STAGES - 2)-:(c_RESET_STAGES - 1)], 1'b0};
 end : p_sync_reset_shift
 
 assign o_rst_mhz = s_rst_shift[c_RESET_STAGES-1];

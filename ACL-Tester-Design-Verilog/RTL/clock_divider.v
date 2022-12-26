@@ -66,17 +66,17 @@ reg s_rst_out;
 // clock waveform.
 always @(posedge i_clk_mhz)
 begin: p_clk_div_cnt
-	if (i_rst_mhz) begin
-		s_clk_div_cnt <= 0;
-		s_clk_div_ce <= 1'b1;
-	end else
-		if (s_clk_div_cnt == c_clk_max) begin
-			s_clk_div_cnt <= 0;
-			s_clk_div_ce <= 1'b1;
-		end else begin
-			s_clk_div_cnt <= s_clk_div_cnt + 1;
-			s_clk_div_ce <= 1'b0;
-		end
+   if (i_rst_mhz) begin
+      s_clk_div_cnt <= 0;
+      s_clk_div_ce <= 1'b1;
+   end else
+      if (s_clk_div_cnt == c_clk_max) begin
+         s_clk_div_cnt <= 0;
+         s_clk_div_ce <= 1'b1;
+      end else begin
+         s_clk_div_cnt <= s_clk_div_cnt + 1;
+         s_clk_div_ce <= 1'b0;
+      end
 end
 
 // While the upstream clock is executing with reset held, this process will
@@ -86,14 +86,14 @@ end
 // downstream clock, the reset will change from active one to inactive low.
 always @(posedge i_clk_mhz)
 begin: p_clk_div_out
-	if (i_rst_mhz) begin
-		s_rst_out <= 1'b1;
-		s_clk_out <= 1'b0;
-	end else
-		if (s_clk_div_ce) begin
-			s_rst_out <= s_rst_out && (~ s_clk_out);
-			s_clk_out <= ~ s_clk_out;
-		end
+   if (i_rst_mhz) begin
+      s_rst_out <= 1'b1;
+      s_clk_out <= 1'b0;
+   end else
+      if (s_clk_div_ce) begin
+         s_rst_out <= s_rst_out && (~ s_clk_out);
+         s_clk_out <= ~ s_clk_out;
+      end
 end
 
 assign o_clk_div = s_clk_out;

@@ -30,11 +30,11 @@
 //Recursive Moore Machine-------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module acl_tester_fsm(i_clk_20mhz, i_rst_20mhz, i_acl_command_ready,
-	i_switches_debounced, o_reading_inactive, o_active_init_display,
-	o_active_run_display, o_mode_is_measur, o_mode_is_linked,
-	o_acl_cmd_init_measur_mode, o_acl_cmd_start_measur_mode,
-	o_acl_cmd_init_linked_mode, o_acl_cmd_start_linked_mode,
-	o_acl_cmd_soft_reset);
+   i_switches_debounced, o_reading_inactive, o_active_init_display,
+   o_active_run_display, o_mode_is_measur, o_mode_is_linked,
+   o_acl_cmd_init_measur_mode, o_acl_cmd_start_measur_mode,
+   o_acl_cmd_init_linked_mode, o_acl_cmd_start_linked_mode,
+   o_acl_cmd_soft_reset);
 
 input wire i_clk_20mhz;
 input wire i_rst_20mhz;
@@ -88,17 +88,17 @@ assign o_mode_is_measur = s_mode_is_measur_aux;
 // the PMOD ACL2 custom driver.
 always @(posedge i_clk_20mhz)
 begin: p_tester_fsm_state_aux
-	if (i_rst_20mhz) begin
-		s_tester_pr_state <= ST_0;
+   if (i_rst_20mhz) begin
+      s_tester_pr_state <= ST_0;
 
-		s_mode_is_measur_aux <= 1'b0;
-		s_mode_is_linked_aux <= 1'b0;
-	end else begin
-		s_tester_pr_state <= s_tester_nx_state;
+      s_mode_is_measur_aux <= 1'b0;
+      s_mode_is_linked_aux <= 1'b0;
+   end else begin
+      s_tester_pr_state <= s_tester_nx_state;
 
-		s_mode_is_measur_aux <= s_mode_is_measur_val;
-		s_mode_is_linked_aux <= s_mode_is_linked_val;
-	end
+      s_mode_is_measur_aux <= s_mode_is_measur_val;
+      s_mode_is_linked_aux <= s_mode_is_linked_val;
+   end
 end
 
 // Tester FSM Combinatorial logic for initializing and starting PMOD ACL2
@@ -106,193 +106,193 @@ end
 // Switch 0 and Not Switch 1, then Mode Measurement is executed. If Switch 1
 // and Not Switch 0, then Mode Linked is executed.
 always @(s_tester_pr_state, i_acl_command_ready,
-	i_switches_debounced,
-	s_mode_is_measur_aux, s_mode_is_linked_aux)
+   i_switches_debounced,
+   s_mode_is_measur_aux, s_mode_is_linked_aux)
 begin: p_tester_fsm_comb
-	case (s_tester_pr_state)
-		ST_1: begin // Step one to command initialize the ACL2 to measurement mode
-			o_reading_inactive = 1'b0;
-			o_acl_cmd_init_measur_mode = 1'b1;
-			o_acl_cmd_init_linked_mode = 1'b0;
-			o_acl_cmd_start_measur_mode = 1'b0;
-			o_acl_cmd_start_linked_mode = 1'b0;
-			o_acl_cmd_soft_reset = 1'b0;
-			o_active_init_display = 1'b1;
-			o_active_run_display = 1'b0;
-			s_mode_is_measur_val = 1'b1;
-			s_mode_is_linked_val = 1'b0;
+   case (s_tester_pr_state)
+      ST_1: begin // Step one to command initialize the ACL2 to measurement mode
+         o_reading_inactive = 1'b0;
+         o_acl_cmd_init_measur_mode = 1'b1;
+         o_acl_cmd_init_linked_mode = 1'b0;
+         o_acl_cmd_start_measur_mode = 1'b0;
+         o_acl_cmd_start_linked_mode = 1'b0;
+         o_acl_cmd_soft_reset = 1'b0;
+         o_active_init_display = 1'b1;
+         o_active_run_display = 1'b0;
+         s_mode_is_measur_val = 1'b1;
+         s_mode_is_linked_val = 1'b0;
 
-			if (i_acl_command_ready) s_tester_nx_state = ST_1;
-			else s_tester_nx_state = ST_2;
-		end
-		ST_2: begin // Step two to wait for ACL2 to start its MM initialization
-			o_reading_inactive = 1'b0;
-			o_acl_cmd_init_measur_mode = 1'b0;
-			o_acl_cmd_init_linked_mode = 1'b0;
-			o_acl_cmd_start_measur_mode = 1'b0;
-			o_acl_cmd_start_linked_mode = 1'b0;
-			o_acl_cmd_soft_reset = 1'b0;
-			o_active_init_display = 1'b1;
-			o_active_run_display = 1'b0;
-			s_mode_is_measur_val = s_mode_is_measur_aux;
-			s_mode_is_linked_val = s_mode_is_linked_aux;
-			
-			if (! i_acl_command_ready) s_tester_nx_state = ST_2;
-			else s_tester_nx_state = ST_3;
-		end
-		ST_3: begin // Step three to command start the ACL2 to measurement mode
-			o_reading_inactive = 1'b0;
-			o_acl_cmd_init_measur_mode = 1'b0;
-			o_acl_cmd_init_linked_mode = 1'b0;
-			o_acl_cmd_start_measur_mode = 1'b1;
-			o_acl_cmd_start_linked_mode = 1'b0;
-			o_acl_cmd_soft_reset = 1'b0;
-			o_active_init_display = 1'b1;
-			o_active_run_display = 1'b0;
-			s_mode_is_measur_val = s_mode_is_measur_aux;
-			s_mode_is_linked_val = s_mode_is_linked_aux;
+         if (i_acl_command_ready) s_tester_nx_state = ST_1;
+         else s_tester_nx_state = ST_2;
+      end
+      ST_2: begin // Step two to wait for ACL2 to start its MM initialization
+         o_reading_inactive = 1'b0;
+         o_acl_cmd_init_measur_mode = 1'b0;
+         o_acl_cmd_init_linked_mode = 1'b0;
+         o_acl_cmd_start_measur_mode = 1'b0;
+         o_acl_cmd_start_linked_mode = 1'b0;
+         o_acl_cmd_soft_reset = 1'b0;
+         o_active_init_display = 1'b1;
+         o_active_run_display = 1'b0;
+         s_mode_is_measur_val = s_mode_is_measur_aux;
+         s_mode_is_linked_val = s_mode_is_linked_aux;
+         
+         if (! i_acl_command_ready) s_tester_nx_state = ST_2;
+         else s_tester_nx_state = ST_3;
+      end
+      ST_3: begin // Step three to command start the ACL2 to measurement mode
+         o_reading_inactive = 1'b0;
+         o_acl_cmd_init_measur_mode = 1'b0;
+         o_acl_cmd_init_linked_mode = 1'b0;
+         o_acl_cmd_start_measur_mode = 1'b1;
+         o_acl_cmd_start_linked_mode = 1'b0;
+         o_acl_cmd_soft_reset = 1'b0;
+         o_active_init_display = 1'b1;
+         o_active_run_display = 1'b0;
+         s_mode_is_measur_val = s_mode_is_measur_aux;
+         s_mode_is_linked_val = s_mode_is_linked_aux;
 
-			if (i_acl_command_ready) s_tester_nx_state = ST_3;
-			else s_tester_nx_state = ST_4;
-		end
-		ST_4: begin // Step four to stop issuing ACL2 commands and transition to IDLE
-					   // (place holder for other steps)
-			o_reading_inactive = 1'b0;
-			o_acl_cmd_init_measur_mode = 1'b0;
-			o_acl_cmd_init_linked_mode = 1'b0;
-			o_acl_cmd_start_measur_mode = 1'b0;
-			o_acl_cmd_start_linked_mode = 1'b0;
-			o_acl_cmd_soft_reset = 1'b0;
-			o_active_init_display = 1'b1;
-			o_active_run_display = 1'b0;
-			s_mode_is_measur_val = s_mode_is_measur_aux;
-			s_mode_is_linked_val = s_mode_is_linked_aux;
-			
-			s_tester_nx_state = ST_9;
-		end
-		ST_5: begin // Step one to command initialize the ACL2 to linked mode
-			o_reading_inactive = 1'b0;
-			o_acl_cmd_init_measur_mode = 1'b0;
-			o_acl_cmd_init_linked_mode = 1'b1;
-			o_acl_cmd_start_measur_mode = 1'b0;
-			o_acl_cmd_start_linked_mode = 1'b0;
-			o_acl_cmd_soft_reset = 1'b0;
-			o_active_init_display = 1'b1;
-			o_active_run_display = 1'b0;
-			s_mode_is_measur_val = 1'b0;
-			s_mode_is_linked_val = 1'b1;
+         if (i_acl_command_ready) s_tester_nx_state = ST_3;
+         else s_tester_nx_state = ST_4;
+      end
+      ST_4: begin // Step four to stop issuing ACL2 commands and transition to IDLE
+                  // (place holder for other steps)
+         o_reading_inactive = 1'b0;
+         o_acl_cmd_init_measur_mode = 1'b0;
+         o_acl_cmd_init_linked_mode = 1'b0;
+         o_acl_cmd_start_measur_mode = 1'b0;
+         o_acl_cmd_start_linked_mode = 1'b0;
+         o_acl_cmd_soft_reset = 1'b0;
+         o_active_init_display = 1'b1;
+         o_active_run_display = 1'b0;
+         s_mode_is_measur_val = s_mode_is_measur_aux;
+         s_mode_is_linked_val = s_mode_is_linked_aux;
+         
+         s_tester_nx_state = ST_9;
+      end
+      ST_5: begin // Step one to command initialize the ACL2 to linked mode
+         o_reading_inactive = 1'b0;
+         o_acl_cmd_init_measur_mode = 1'b0;
+         o_acl_cmd_init_linked_mode = 1'b1;
+         o_acl_cmd_start_measur_mode = 1'b0;
+         o_acl_cmd_start_linked_mode = 1'b0;
+         o_acl_cmd_soft_reset = 1'b0;
+         o_active_init_display = 1'b1;
+         o_active_run_display = 1'b0;
+         s_mode_is_measur_val = 1'b0;
+         s_mode_is_linked_val = 1'b1;
 
-			if (i_acl_command_ready) s_tester_nx_state = ST_5;
-			else s_tester_nx_state = ST_6;
-		end
-		ST_6: begin // Step two to wait for ACL2 to start its LM initialization
-			o_reading_inactive = 1'b0;
-			o_acl_cmd_init_measur_mode = 1'b0;
-			o_acl_cmd_init_linked_mode = 1'b0;
-			o_acl_cmd_start_measur_mode = 1'b0;
-			o_acl_cmd_start_linked_mode = 1'b0;
-			o_acl_cmd_soft_reset = 1'b0;
-			o_active_init_display = 1'b1;
-			o_active_run_display = 1'b0;
-			s_mode_is_measur_val = s_mode_is_measur_aux;
-			s_mode_is_linked_val = s_mode_is_linked_aux;
-			
-			if (! i_acl_command_ready) s_tester_nx_state = ST_6;
-			else s_tester_nx_state = ST_7;
-		end
-		ST_7: begin // Step three to command start the ACL2 to linked mode
-			o_reading_inactive = 1'b0;
-			o_acl_cmd_init_measur_mode = 1'b0;
-			o_acl_cmd_init_linked_mode = 1'b0;
-			o_acl_cmd_start_measur_mode = 1'b0;
-			o_acl_cmd_start_linked_mode = 1'b1;
-			o_acl_cmd_soft_reset = 1'b0;
-			o_active_init_display = 1'b1;
-			o_active_run_display = 1'b0;
-			s_mode_is_measur_val = s_mode_is_measur_aux;
-			s_mode_is_linked_val = s_mode_is_linked_aux;
+         if (i_acl_command_ready) s_tester_nx_state = ST_5;
+         else s_tester_nx_state = ST_6;
+      end
+      ST_6: begin // Step two to wait for ACL2 to start its LM initialization
+         o_reading_inactive = 1'b0;
+         o_acl_cmd_init_measur_mode = 1'b0;
+         o_acl_cmd_init_linked_mode = 1'b0;
+         o_acl_cmd_start_measur_mode = 1'b0;
+         o_acl_cmd_start_linked_mode = 1'b0;
+         o_acl_cmd_soft_reset = 1'b0;
+         o_active_init_display = 1'b1;
+         o_active_run_display = 1'b0;
+         s_mode_is_measur_val = s_mode_is_measur_aux;
+         s_mode_is_linked_val = s_mode_is_linked_aux;
+         
+         if (! i_acl_command_ready) s_tester_nx_state = ST_6;
+         else s_tester_nx_state = ST_7;
+      end
+      ST_7: begin // Step three to command start the ACL2 to linked mode
+         o_reading_inactive = 1'b0;
+         o_acl_cmd_init_measur_mode = 1'b0;
+         o_acl_cmd_init_linked_mode = 1'b0;
+         o_acl_cmd_start_measur_mode = 1'b0;
+         o_acl_cmd_start_linked_mode = 1'b1;
+         o_acl_cmd_soft_reset = 1'b0;
+         o_active_init_display = 1'b1;
+         o_active_run_display = 1'b0;
+         s_mode_is_measur_val = s_mode_is_measur_aux;
+         s_mode_is_linked_val = s_mode_is_linked_aux;
 
-			if (i_acl_command_ready) s_tester_nx_state = ST_7;
-			else s_tester_nx_state = ST_8;
-		end
-		ST_8: begin // Step four to stop issuing commands and transition to IDLE
-					   // (place holder for other steps)
-			o_reading_inactive = 1'b0;
-			o_acl_cmd_init_measur_mode = 1'b0;
-			o_acl_cmd_init_linked_mode = 1'b0;
-			o_acl_cmd_start_measur_mode = 1'b0;
-			o_acl_cmd_start_linked_mode = 1'b0;
-			o_acl_cmd_soft_reset = 1'b0;
-			o_active_init_display = 1'b1;
-			o_active_run_display = 1'b0;
-			s_mode_is_measur_val = s_mode_is_measur_aux;
-			s_mode_is_linked_val = s_mode_is_linked_aux;
-			
-			s_tester_nx_state = ST_9;
-		end
-		ST_9: begin // State nine is RUNNING IDLE and waits for switches 0,1
-					   // to enter a non-exclusive state to then transition
-					   // to State A which in turn will reset the PMOD ACL2 and wait
-					   // for an exclusive command on the switches 0,1.
-			o_reading_inactive = 1'b0; // allow the display to show non-idle data
-			o_acl_cmd_init_measur_mode = 1'b0;
-			o_acl_cmd_init_linked_mode = 1'b0;
-			o_acl_cmd_start_measur_mode = 1'b0;
-			o_acl_cmd_start_linked_mode = 1'b0;
-			o_acl_cmd_soft_reset = 1'b0;
-			o_active_init_display = 1'b0;
-			o_active_run_display = 1'b1;
-			s_mode_is_measur_val = s_mode_is_measur_aux;
-			s_mode_is_linked_val = s_mode_is_linked_aux;
+         if (i_acl_command_ready) s_tester_nx_state = ST_7;
+         else s_tester_nx_state = ST_8;
+      end
+      ST_8: begin // Step four to stop issuing commands and transition to IDLE
+                  // (place holder for other steps)
+         o_reading_inactive = 1'b0;
+         o_acl_cmd_init_measur_mode = 1'b0;
+         o_acl_cmd_init_linked_mode = 1'b0;
+         o_acl_cmd_start_measur_mode = 1'b0;
+         o_acl_cmd_start_linked_mode = 1'b0;
+         o_acl_cmd_soft_reset = 1'b0;
+         o_active_init_display = 1'b1;
+         o_active_run_display = 1'b0;
+         s_mode_is_measur_val = s_mode_is_measur_aux;
+         s_mode_is_linked_val = s_mode_is_linked_aux;
+         
+         s_tester_nx_state = ST_9;
+      end
+      ST_9: begin // State nine is RUNNING IDLE and waits for switches 0,1
+                  // to enter a non-exclusive state to then transition
+                  // to State A which in turn will reset the PMOD ACL2 and wait
+                  // for an exclusive command on the switches 0,1.
+         o_reading_inactive = 1'b0; // allow the display to show non-idle data
+         o_acl_cmd_init_measur_mode = 1'b0;
+         o_acl_cmd_init_linked_mode = 1'b0;
+         o_acl_cmd_start_measur_mode = 1'b0;
+         o_acl_cmd_start_linked_mode = 1'b0;
+         o_acl_cmd_soft_reset = 1'b0;
+         o_active_init_display = 1'b0;
+         o_active_run_display = 1'b1;
+         s_mode_is_measur_val = s_mode_is_measur_aux;
+         s_mode_is_linked_val = s_mode_is_linked_aux;
 
-			if (i_switches_debounced == 4'b0000) // no solitary switch is ON
-				s_tester_nx_state = ST_A;
-			else
-				s_tester_nx_state = ST_9;
-		end
-		ST_A: begin // Step A to issue the Soft Reset command to the PMOD ACL2
-					   // Then transition to Step Zero for INIT IDLE and waiting
-					   // for exclusive switch position.
-			o_reading_inactive = 1'b0;
-			o_acl_cmd_init_measur_mode = 1'b0;
-			o_acl_cmd_init_linked_mode = 1'b0;
-			o_acl_cmd_start_measur_mode = 1'b0;
-			o_acl_cmd_start_linked_mode = 1'b0;
-			o_acl_cmd_soft_reset = 1'b1; // acts as a level interrupt instead of command
-			o_active_init_display = 1'b0;
-			o_active_run_display = 1'b0;
-			s_mode_is_measur_val = 1'b0;
-			s_mode_is_linked_val = 1'b0;
+         if (i_switches_debounced == 4'b0000) // no solitary switch is ON
+            s_tester_nx_state = ST_A;
+         else
+            s_tester_nx_state = ST_9;
+      end
+      ST_A: begin // Step A to issue the Soft Reset command to the PMOD ACL2
+                  // Then transition to Step Zero for INIT IDLE and waiting
+                  // for exclusive switch position.
+         o_reading_inactive = 1'b0;
+         o_acl_cmd_init_measur_mode = 1'b0;
+         o_acl_cmd_init_linked_mode = 1'b0;
+         o_acl_cmd_start_measur_mode = 1'b0;
+         o_acl_cmd_start_linked_mode = 1'b0;
+         o_acl_cmd_soft_reset = 1'b1; // acts as a level interrupt instead of command
+         o_active_init_display = 1'b0;
+         o_active_run_display = 1'b0;
+         s_mode_is_measur_val = 1'b0;
+         s_mode_is_linked_val = 1'b0;
 
-			if (i_acl_command_ready) s_tester_nx_state = ST_0;
-			else s_tester_nx_state = ST_A;
-		end
+         if (i_acl_command_ready) s_tester_nx_state = ST_0;
+         else s_tester_nx_state = ST_A;
+      end
 
-		default: begin // ST_0
-					   // Step Zero is INIT IDLE, waiting for exclusive switch
-						// position to then transition to INIT Measure Mode or
-						// INIT Linked Mode.
-			o_reading_inactive = 1'b1;
-			o_acl_cmd_init_measur_mode = 1'b0;
-			o_acl_cmd_init_linked_mode = 1'b0;
-			o_acl_cmd_start_measur_mode = 1'b0;
-			o_acl_cmd_start_linked_mode = 1'b0;
-			o_acl_cmd_soft_reset = 1'b0;
-			o_active_init_display = 1'b0;
-			o_active_run_display = 1'b0;
-			s_mode_is_measur_val = s_mode_is_measur_aux;
-			s_mode_is_linked_val = s_mode_is_linked_aux;
+      default: begin // ST_0
+                  // Step Zero is INIT IDLE, waiting for exclusive switch
+                  // position to then transition to INIT Measure Mode or
+                  // INIT Linked Mode.
+         o_reading_inactive = 1'b1;
+         o_acl_cmd_init_measur_mode = 1'b0;
+         o_acl_cmd_init_linked_mode = 1'b0;
+         o_acl_cmd_start_measur_mode = 1'b0;
+         o_acl_cmd_start_linked_mode = 1'b0;
+         o_acl_cmd_soft_reset = 1'b0;
+         o_active_init_display = 1'b0;
+         o_active_run_display = 1'b0;
+         s_mode_is_measur_val = s_mode_is_measur_aux;
+         s_mode_is_linked_val = s_mode_is_linked_aux;
 
-			if (i_acl_command_ready)
-				if (i_switches_debounced == 4'b0001) // switch 0 solitary
-					s_tester_nx_state = ST_1;
-				else if (i_switches_debounced == 4'b0010) // switch 1 solitary
-					s_tester_nx_state = ST_5;
-				else
-					s_tester_nx_state = ST_0;
-			else s_tester_nx_state = ST_0;
-		end
-	endcase
+         if (i_acl_command_ready)
+            if (i_switches_debounced == 4'b0001) // switch 0 solitary
+               s_tester_nx_state = ST_1;
+            else if (i_switches_debounced == 4'b0010) // switch 1 solitary
+               s_tester_nx_state = ST_5;
+            else
+               s_tester_nx_state = ST_0;
+         else s_tester_nx_state = ST_0;
+      end
+   endcase
 end
 
 endmodule
