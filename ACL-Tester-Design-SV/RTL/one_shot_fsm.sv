@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020-2021 Timothy Stotts
+-- Copyright (c) 2020-2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -34,12 +34,12 @@
 //Regular FSM-------------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module one_shot_fsm
-	(
-		input logic x,
-		input logic clk,
-		input logic rst,
-		output logic y
-		);
+    (
+        input logic x,
+        input logic clk,
+        input logic rst,
+        output logic y
+        );
 
 // Part 2: Declarations---------------------------------------------------------
 timeunit 1ns;
@@ -56,38 +56,38 @@ logic s_y_out;
 // State register
 always_ff @(posedge clk)
 begin : p_fsm_pr_state
-	if (rst) s_1shot_pr_state <= ST_A;
-	else s_1shot_pr_state <= s_1shot_nx_state;
+    if (rst) s_1shot_pr_state <= ST_A;
+    else s_1shot_pr_state <= s_1shot_nx_state;
 end : p_fsm_pr_state
 
 // Next state assignment and output
 always_comb
 begin : p_fsm_nx_state_out
-	case (s_1shot_pr_state)
-		ST_B : begin
-			s_y_out = 1'b1;
-			if (x) s_1shot_nx_state = ST_C;
-			else s_1shot_nx_state = ST_A;
-		end
-		ST_C : begin
-			s_y_out = 1'b0;
-			if (! x) s_1shot_nx_state = ST_A;
-			else s_1shot_nx_state = ST_C;
-		end
-		default : begin // ST_A
-			s_y_out = 1'b0;
-			if (x) s_1shot_nx_state = ST_B;
-			else s_1shot_nx_state = ST_A;
-		end
-	endcase // s_1shot_pr_state
+    case (s_1shot_pr_state)
+        ST_B : begin
+            s_y_out = 1'b1;
+            if (x) s_1shot_nx_state = ST_C;
+            else s_1shot_nx_state = ST_A;
+        end
+        ST_C : begin
+            s_y_out = 1'b0;
+            if (! x) s_1shot_nx_state = ST_A;
+            else s_1shot_nx_state = ST_C;
+        end
+        default : begin // ST_A
+            s_y_out = 1'b0;
+            if (x) s_1shot_nx_state = ST_B;
+            else s_1shot_nx_state = ST_A;
+        end
+    endcase // s_1shot_pr_state
 end : p_fsm_nx_state_out
 
 // Register output to prevent possible FSM output glitch
 always_ff @(posedge clk)
 begin : p_fsm_glitch_free
-	y <= s_y_out;
+    y <= s_y_out;
 end : p_fsm_glitch_free
 
-endmodule : one_shot_fsm // one_shot_fsm_best
+endmodule : one_shot_fsm // one_shot_fsm
 //------------------------------------------------------------------------------
 `end_keywords

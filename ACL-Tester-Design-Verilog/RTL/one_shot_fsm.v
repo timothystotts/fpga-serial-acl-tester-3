@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020 Timothy Stotts
+-- Copyright (c) 2020,2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -33,11 +33,10 @@
 //------------------------------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module one_shot_fsm (y, clk, rst, x);
-input x;
-input clk;
-input rst;
-output y;
-reg y;
+output reg y;
+input wire clk;
+input wire rst;
+input wire x;
 
 // Part 2: Declarations---------------------------------------------------------
 localparam [1:0] ST_A = 2'b00;
@@ -53,37 +52,37 @@ reg s_y_out;
 // State register
 always @(posedge clk)
 begin : p_fsm_pr_state
-	if (rst) s_pr_state <= ST_A;
-	else s_pr_state <= s_nx_state;
+    if (rst) s_pr_state <= ST_A;
+    else s_pr_state <= s_nx_state;
 end
 
 // Next state assignment and output
 always @(s_pr_state, x)
 begin : p_fsm_nx_state_out
-	case (s_pr_state)
-		ST_B : begin
-			s_y_out = 1'b1;
-			if (x) s_nx_state = ST_C;
-			else s_nx_state = ST_A;
-		end
-		ST_C : begin
-			s_y_out = 1'b0;
-			if (! x) s_nx_state = ST_A;
-			else s_nx_state = ST_C;
-		end
-		default : begin // ST_A
-			s_y_out = 1'b0;
-			if (x) s_nx_state = ST_B;
-			else s_nx_state = ST_A;
-		end
-	endcase // s_pr_state
+    case (s_pr_state)
+        ST_B : begin
+            s_y_out = 1'b1;
+            if (x) s_nx_state = ST_C;
+            else s_nx_state = ST_A;
+        end
+        ST_C : begin
+            s_y_out = 1'b0;
+            if (! x) s_nx_state = ST_A;
+            else s_nx_state = ST_C;
+        end
+        default : begin // ST_A
+            s_y_out = 1'b0;
+            if (x) s_nx_state = ST_B;
+            else s_nx_state = ST_A;
+        end
+    endcase // s_pr_state
 end
 
 // Register output to prevent possible FSM output glitch
 always @(posedge clk)
 begin : p_fsm_glitch_free
-	y <= s_y_out;
+    y <= s_y_out;
 end
 
-endmodule // one_shot_fsm_best
+endmodule // one_shot_fsm
 //------------------------------------------------------------------------------
