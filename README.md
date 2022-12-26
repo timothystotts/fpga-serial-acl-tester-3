@@ -10,6 +10,9 @@ Now with support for:
 - Digilent Inc. Arty A7-100 FPGA development board containing a large Xilinx Artix-7 FPGA
 - Digilent Inc. Zybo Z7-20 APSoC development board containing a moderate Zyng-7000 SoC.
 
+Note that clerical corrections are being made in branch `bugs/various_defects`. These
+corrections include updates to comments, commenting style, and whitespace.
+
 ## Description
 A small FPGA project of different implementations for testing Measurement and Activity Events of a SPI accelerometer.
 The Xilinx MicroBlaze design and the three HDL designs can now target either of
