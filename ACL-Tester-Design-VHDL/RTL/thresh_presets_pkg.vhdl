@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020 Timothy Stotts
+-- Copyright (c) 2020,2022 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -34,14 +34,14 @@ library work;
 use work.thresh_presets_selector_pkg.all;
 
 package thresh_presets_pkg is
-	constant c_thresh_presets_active_a : t_val_presets_group := (
-		thresholds => (32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 65000, 65000, 65000, 65000, 65000, 65000),
-		timers => (16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 65000, 65000, 65000, 65000, 65000, 65000)
-		);
+    constant c_thresh_presets_active_a : t_val_presets_group := (
+        thresholds => (32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 65000, 65000, 65000, 65000, 65000, 65000),
+        timers => (16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 65000, 65000, 65000, 65000, 65000, 65000)
+        );
 
-	constant c_thresh_presets_inactive_a : t_val_presets_group := (
-		thresholds => (16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 65000, 65000, 65000, 65000, 65000, 65000),
-		timers => (32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 65000, 65000, 65000, 65000, 65000, 65000)
-		);
+    constant c_thresh_presets_inactive_a : t_val_presets_group := (
+        thresholds => (16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 65000, 65000, 65000, 65000, 65000, 65000),
+        timers => (32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 65000, 65000, 65000, 65000, 65000, 65000)
+        );
 end package thresh_presets_pkg;
 --------------------------------------------------------------------------------
