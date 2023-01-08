@@ -27,11 +27,13 @@
 -- \brief A FPGA top-level design with the PMOD ACL2 custom driver.
 -- The target board is the Digilent Inc. Arty-A7-100 with a
 -- Xilinx Artix-7 100T part.
--- This design operates the ADXL362 in one of multiple possible operational
--- modes for Accelerometer data capture. The PMOD CLS is used to display raw
--- data for: X-Axis, Y-Axis, Z-Axis, Temperature. Color and basic LEDs
+-- This tester operates the ADXL362 in one of multiple possible operational
+-- modes for Accelerometer data capture. The PMOD CLS is used to display
+-- formatted data for: X-Axis, Y-Axis, Z-Axis, Temperature. Color and basic LEDs
 -- are used to display additional information, including Activity and Inactivity
--- motion detection.
+-- motion detection. The PMOD SSD/7SD displays two numbers representing
+-- the selected indexes of the two threshold presets used in PMOD ACL2 Linked
+-- Mode.
 ------------------------------------------------------------------------------*/
 //------------------------------------------------------------------------------
 `begin_keywords "1800-2012"
@@ -40,6 +42,7 @@
 module fpga_serial_acl_tester_a7100
   import pmod_stand_spi_solo_pkg::*;
   #(parameter
+    // Disable or enable fast FSM delays for simulation instead of implementation.
     integer parm_fast_simulation = 0)
   (
   // external clock and active-low reset
@@ -90,7 +93,7 @@ module fpga_serial_acl_tester_a7100
   // Arty A7-100T UART TX and RX signals
   output logic eo_uart_tx,
   input logic ei_uart_rx,
-  // PMOD SSD direct GPIO
+  // PMOD 7SD direct GPIO
   output logic [7:0] eo_ssd_pmod0);
 
 //Part 2: Declarations----------------------------------------------------------
@@ -188,8 +191,8 @@ logic s_clk_clkfbout;
 logic s_clk_pwrdwn;
 logic s_clk_resetin;
 
-// Color palette signals to connect \ref led_palette_pulser to \ref
-// led_pwm_driver .
+// Color palette signals to connect \ref led_palette_pulser to
+// \ref led_pwm_driver .
 logic [(4*8-1):0] s_color_led_red_value;
 logic [(4*8-1):0] s_color_led_green_value;
 logic [(4*8-1):0] s_color_led_blue_value;
@@ -202,7 +205,7 @@ logic [7:0] s_uart_txdata;
 logic s_uart_txvalid;
 logic s_uart_txready;
 
-// Values for display on the Pmod SSD
+// Values for display on the Pmod SSD/7SD
 logic [3:0] s_thresh_value0;
 logic [3:0] s_thresh_value1;
 
@@ -304,7 +307,7 @@ clock_enable_divider #(
   .i_ce_mhz(1'b1));
 
 // Synchronize and debounce the four input switches on the Arty A7 to be
-// debounced and exclusive of each other (ignored if more than one
+// debounced and exclusive of each other (zeros if more than one
 // selected at the same time).
 assign si_switches = {ei_sw3, ei_sw2, ei_sw1, ei_sw0};
 
@@ -318,7 +321,7 @@ multi_input_debounce #(
     );
 
 // Synchronize and debounce the four input buttons on the Arty A7 to be
-// debounced and exclusive of each other (ignored if more than one
+// debounced and exclusive of each other (zeros if more than one
 // selected at the same time).
 assign si_buttons = {ei_btn3, ei_btn2, ei_btn1, ei_btn0};
 
@@ -574,7 +577,8 @@ uart_tx_feed #(
   .i_dat_ascii_line(s_uart_dat_ascii_line)
   );
 
-// A single PMOD SSD, two digit seven segment display
+// A single PMOD 7SD, two digit seven segment display, to display the index
+// of Activity threshold preset and Inactivity threshold preset.
 one_pmod_ssd_display #() u_one_pmod_ssd_display (
   .i_clk_20mhz(s_clk_20mhz),
   .i_rst_20mhz(s_rst_20mhz),

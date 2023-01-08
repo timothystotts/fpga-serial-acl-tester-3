@@ -27,10 +27,12 @@
 -- The target board is the Digilent Inc. Arty-A7-100 with a
 -- Xilinx Artix-7 100T part.
 -- This tester operates the ADXL362 in one of multiple possible operational
--- modes for Accelerometer data capture. The PMOD CLS is used to display raw
--- data for: X-Axis, Y-Axis, Z-Axis, Temperature. Color and basic LEDs
+-- modes for Accelerometer data capture. The PMOD CLS is used to display
+-- formatted data for: X-Axis, Y-Axis, Z-Axis, Temperature. Color and basic LEDs
 -- are used to display additional information, including Activity and Inactivity
--- motion detection.
+-- motion detection. The PMOD SSD/7SD displays two numbers representing
+-- the selected indexes of the two threshold presets used in PMOD ACL2 Linked
+-- Mode.
 --------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
@@ -48,7 +50,7 @@ use work.led_pwm_driver_pkg.t_led_color_values;
 --------------------------------------------------------------------------------
 entity fpga_serial_acl_tester_a7100 is
     generic(
-        -- Disable or enable fast FSM delays for simulation instead of impelementation.
+        -- Disable or enable fast FSM delays for simulation instead of implementation.
         parm_fast_simulation : integer := 0);
     port(
         -- external clock and active-low reset
@@ -99,7 +101,7 @@ entity fpga_serial_acl_tester_a7100 is
         -- Arty A7-100T UART TX and RX signals
         eo_uart_tx : out std_logic;
         ei_uart_rx : in  std_logic;
-        -- PMOD SSD direct GPIO
+        -- PMOD 7SD direct GPIO
         eo_ssd_pmod0 : out std_logic_vector(7 downto 0)
     );
 end entity fpga_serial_acl_tester_a7100;
@@ -119,7 +121,7 @@ architecture rtl of fpga_serial_acl_tester_a7100 is
     signal s_rst_7_37mhz : std_logic;
     signal s_ce_2_5mhz   : std_logic;
 
-    -- Definitions of the Standard SPI driver to pass to the ACL2 and CLS drivers
+    -- Definitions for the Standard SPI driver to pass to the ACL2 and CLS drivers
     constant c_stand_spi_tx_fifo_count_bits : natural := 5;
     constant c_stand_spi_rx_fifo_count_bits : natural := 5;
     constant c_stand_spi_wait_count_bits    : natural := 2;
@@ -186,7 +188,7 @@ architecture rtl of fpga_serial_acl_tester_a7100 is
     signal so_pmod_cls_copi_o : std_logic;
     signal so_pmod_cls_copi_t : std_logic;
 
-    -- Extra MMCM signals for full port map to the MMCM primative, where
+    -- Extra MMCM signals for full port map to the MMCM primitive, where
     -- these signals will remain disconnected.
     signal s_clk_ignore_clk0b     : std_logic;
     signal s_clk_ignore_clk1b     : std_logic;
@@ -198,7 +200,7 @@ architecture rtl of fpga_serial_acl_tester_a7100 is
     signal s_clk_ignore_clk5      : std_logic;
     signal s_clk_ignore_clk6      : std_logic;
     signal s_clk_ignore_clkfboutb : std_logic;
-    -- Extra MMCM signals for full port map to the MMCM primative, where
+    -- Extra MMCM signals for full port map to the MMCM primitive, where
     -- these signals are connected.
     signal s_clk_clkfbout         : std_logic;
     signal s_clk_pwrdwn           : std_logic;
@@ -218,7 +220,7 @@ architecture rtl of fpga_serial_acl_tester_a7100 is
     signal s_uart_txvalid        : std_logic;
     signal s_uart_txready        : std_logic;
 
-    -- Values for display on the Pmod SSD
+    -- Values for display on the Pmod SSD/7SD
     signal s_thresh_value0 : std_logic_vector(3 downto 0);
     signal s_thresh_value1 : std_logic_vector(3 downto 0);
 begin
@@ -301,7 +303,7 @@ begin
             o_rst_mhz     => s_rst_20mhz
         );
 
-    -- Reset Synchronization for 20 MHz clock
+    -- Reset Synchronization for 7.37 MHz clock
     u_reset_sync_7_37mhz : entity work.arty_reset_synchronizer(rtl)
         port map(
             i_clk_mhz     => s_clk_7_37mhz,
@@ -325,7 +327,7 @@ begin
         );
 
     -- Synchronize and debounce the four input switches on the Arty A7 to be
-    -- debounced and exclusive of each other (ignored if more than one
+    -- debounced and exclusive of each other (zeros if more than one
     -- selected at the same time).
     si_switches <= ei_sw3 & ei_sw2 & ei_sw1 & ei_sw0;
 
@@ -341,7 +343,7 @@ begin
         );
 
     -- Synchronize and debounce the four input buttons on the Arty A7 to be
-    -- debounced and exclusive of each other (ignored if more than one
+    -- debounced and exclusive of each other (zeros if more than one
     -- selected at the same time).
     si_buttons <= ei_btn3 & ei_btn2 & ei_btn1 & ei_btn0;
 
@@ -639,7 +641,8 @@ begin
             i_dat_ascii_line => s_uart_dat_ascii_line
         );
 
-    -- A single PMOD SSD, two digit seven segment display
+    -- A single PMOD 7SD, two digit seven segment display, to display the index
+    -- of Activity threshold preset and Inactivity threshold preset.
     u_one_pmod_ssd_display : entity work.one_pmod_ssd_display(rtl)
         port map (
             i_clk_20mhz => s_clk_20mhz,

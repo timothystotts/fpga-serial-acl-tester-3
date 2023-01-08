@@ -27,14 +27,15 @@
 -- \brief A FPGA top-level design with the PMOD ACL2 custom driver.
 -- The target board is the Digilent Inc. Arty-A7-100 with a
 -- Xilinx Artix-7 100T part.
--- This design operates the ADXL362 in one of multiple possible operational
--- modes for Accelerometer data capture. The PMOD CLS is used to display raw
--- data for: X-Axis, Y-Axis, Z-Axis, Temperature. Color and basic LEDs
+-- This tester operates the ADXL362 in one of multiple possible operational
+-- modes for Accelerometer data capture. The PMOD CLS is used to display
+-- formatted data for: X-Axis, Y-Axis, Z-Axis, Temperature. Color and basic LEDs
 -- are used to display additional information, including Activity and Inactivity
--- motion detection.
+-- motion detection. The PMOD SSD/7SD displays two numbers representing
+-- the selected indexes of the two threshold presets used in PMOD ACL2 Linked
+-- Mode.
 ------------------------------------------------------------------------------*/
 //------------------------------------------------------------------------------
-//Multiple Moore Machines
 //Part 1: Module header:--------------------------------------------------------
 module fpga_serial_acl_tester_a7100 (
   // external clock and active-low reset
@@ -59,10 +60,10 @@ module fpga_serial_acl_tester_a7100 (
   ei_pmod_cls_dq1,
   // Arty A7-100T UART TX and RX signals
   eo_uart_tx, ei_uart_rx,
-  // PMOD SSD direct GPIO
+  // PMOD 7SD direct GPIO
   eo_ssd_pmod0);
 
-// Disable or enable fast FSM delays for simulation instead of impelementation.
+// Disable or enable fast FSM delays for simulation instead of implementation.
 parameter integer parm_fast_simulation = 0;
 
 input wire CLK100MHZ;
@@ -194,7 +195,7 @@ wire so_pmod_cls_csn_t;
 wire so_pmod_cls_copi_o;
 wire so_pmod_cls_copi_t;
 
-// Extra MMCM signals for full port map to the MMCM primative, where
+// Extra MMCM signals for full port map to the MMCM primitive, where
 // these signals will remain disconnected.
 wire s_clk_ignore_clk0b;
 wire s_clk_ignore_clk1b;
@@ -206,7 +207,7 @@ wire s_clk_ignore_clk4;
 wire s_clk_ignore_clk5;
 wire s_clk_ignore_clk6;
 wire s_clk_ignore_clkfboutb;
-// Extra MMCM signals for full port map to the MMCM primative, where
+// Extra MMCM signals for full port map to the MMCM primitive, where
 // these signals are connected.
 wire s_clk_clkfbout;
 wire s_clk_pwrdwn;
@@ -226,7 +227,7 @@ wire [7:0] s_uart_txdata;
 wire s_uart_txvalid;
 wire s_uart_txready;
 
-// Values for display on the Pmod SSD
+// Values for display on the Pmod SSD/7SD
 wire [3:0] s_thresh_value0;
 wire [3:0] s_thresh_value1;
 
@@ -328,7 +329,7 @@ clock_enable_divider #(
   .i_ce_mhz(1'b1));
 
 // Synchronize and debounce the four input switches on the Arty A7 to be
-// debounced and exclusive of each other (ignored if more than one
+// debounced and exclusive of each other (zeros if more than one
 // selected at the same time).
 assign si_switches = {ei_sw3, ei_sw2, ei_sw1, ei_sw0};
 
@@ -342,7 +343,7 @@ multi_input_debounce #(
     );
 
 // Synchronize and debounce the four input buttons on the Arty A7 to be
-// debounced and exclusive of each other (ignored if more than one
+// debounced and exclusive of each other (zeros if more than one
 // selected at the same time).
 assign si_buttons = {ei_btn3, ei_btn2, ei_btn1, ei_btn0};
 
@@ -600,7 +601,8 @@ uart_tx_feed #(
   .i_dat_ascii_line(s_uart_dat_ascii_line)
   );
 
-// A single PMOD SSD, two digit seven segment display
+// A single PMOD 7SD, two digit seven segment display, to display the index
+// of Activity threshold preset and Inactivity threshold preset.
 one_pmod_ssd_display #() u_one_pmod_ssd_display (
   .i_clk_20mhz(s_clk_20mhz),
   .i_rst_20mhz(s_rst_20mhz),
