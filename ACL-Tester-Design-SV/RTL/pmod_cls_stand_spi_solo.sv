@@ -28,7 +28,7 @@
 -- SPI Mode 0. The design only enables clearing the display, or writing a full
 -- sixteen character line of one of the two lines of the display at a time.
 ------------------------------------------------------------------------------*/
-`begin_keywords "1800-2009"
+`begin_keywords "1800-2012"
 //------------------------------------------------------------------------------
 //Recursive Moore Machine
 //Part 1: Module header:--------------------------------------------------------
