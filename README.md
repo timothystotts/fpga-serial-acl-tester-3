@@ -10,8 +10,9 @@ Now with support for:
 - Digilent Inc. Arty A7-100 FPGA development board containing a large Xilinx Artix-7 FPGA
 - Digilent Inc. Zybo Z7-20 APSoC development board containing a moderate Zyng-7000 SoC.
 
-Note that clerical corrections were completed in branch `bugs/various_defects`. These
-corrections include updates to comments, commenting style, and whitespace.
+Note that clerical corrections were completed in branch `bugs/various_defects`
+and merged to branch `main`. These corrections include updates to comments,
+commenting style, and whitespace.
 
 Note also that the photos of Arty S7-25 assembly currently show PMOD ACL2 at JB and PMOD
 CLS at JA; but the three RTL code projects have the PMOD ACL2 at JA and the PMOD CLS at JB.
