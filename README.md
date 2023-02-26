@@ -4,6 +4,12 @@ FPGA Serial ACL Tester Version 3
 
 by Timothy Stotts
 
+This project version replaces
+[fpga-serial-acl-tester-1](https://github.com/timothystotts/fpga-serial-acl-tester-1)
+and
+[fpga-serial-acl-tester-2](https://github.com/timothystotts/fpga-serial-acl-tester-2)
+.
+
 Now with support for:
 
 - Digilent Inc. Arty S7-25 FPGA development board containing a small Xilinx Spartan-7 FPGA
