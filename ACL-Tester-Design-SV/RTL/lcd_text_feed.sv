@@ -27,7 +27,7 @@
 -- \brief A timed FSM to feed display updates to a two-line LCD.
 ------------------------------------------------------------------------------*/
 `begin_keywords "1800-2012"
-//Recursive Moore Machine-------------------------------------------------------
+//Timed Moore Machine-------------------------------------------------------
 //Part 1: Module header:--------------------------------------------------------
 module lcd_text_feed
    #(parameter
@@ -64,7 +64,7 @@ t_lcd_upd_state s_lcd_upd_nx_state;
 // Write Line 1
 // Wait 1.0 milliseconds
 // Write Line 2
-// Wait 0.2 seconds
+// Wait 0.198 seconds
 // Repeat the above.
 localparam c_lcd_update_timer_bits = 24;
 // The sub-second refresh is actually 1/5 of a second to have a 5 Hz refresh,

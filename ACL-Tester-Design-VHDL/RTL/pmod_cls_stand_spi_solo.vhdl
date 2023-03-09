@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020-2022 Timothy Stotts
+-- Copyright (c) 2020-2023 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@ entity pmod_cls_stand_spi_solo is
         o_rx_dequeue : out std_logic;
         i_rx_valid   : in  std_logic;
         i_rx_avail   : in  std_logic;
-        -- FPGA system interface to CLS operation
+        -- FPGA system interface for CLS operation
         o_command_ready        : out std_logic;
         i_cmd_wr_clear_display : in  std_logic;
         i_cmd_wr_text_line1    : in  std_logic;

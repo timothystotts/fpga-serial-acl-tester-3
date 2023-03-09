@@ -88,7 +88,7 @@ architecture moore_fsm_recursive of uart_tx_only is
     signal s_data_val : std_logic_vector(7 downto 0);
     signal s_data_aux : std_logic_vector(7 downto 0);
 
-    -- Internal clock for 1x the baud rate
+    -- Internal clock enable for 1x the baud rate
     signal s_ce_baud_1x : std_logic;
 
     -- Mapping for FIFO TX

@@ -47,7 +47,7 @@ module pmod_cls_stand_spi_solo
         input logic i_ext_spi_clk_x,
         input logic i_srst,
         input logic i_spi_ce_4x,
-        // system and FIFO interface to the \ref pmod_generic_spi_solo module.
+        // system and FIFO interface to the \ref pmod_generic_spi_solo module
         pmod_generic_spi_solo_intf.spi_sysdrv sdrv,
         // FPGA system interface to CLS operation
         output logic o_command_ready,
@@ -132,8 +132,8 @@ begin: p_fsm_state_aux
     if (i_srst) begin
         s_cls_drv_pr_state <= ST_CLS_BOOT0;
 
-        s_cls_cmd_len_aux <= '0;
-        s_cls_dat_len_aux <= '0;
+        s_cls_cmd_len_aux <= 0;
+        s_cls_dat_len_aux <= 0;
         s_cls_cmd_tx_aux <= '0;
         s_cls_dat_tx_aux <= '0;
         s_cls_cmd_txlen_aux <= 0;

@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2020,2022 Timothy Stotts
+-- Copyright (c) 2020,2023 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,8 @@
 -- \description  This FSM for \ref par_T_stretch_count of 2 or more implements
 -- the FSM of Figure 8.28a from the text Finite State Machines in Hardware:
 -- Theory and Design (with VHDL and SystemVerilog) by Volnei A. Pedroni.
+-- For a count of 1, the entity implements a single D-FF between input and
+-- output, and for a count of 0, the entity implements a pass-through.
 --------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;

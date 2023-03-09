@@ -26,7 +26,7 @@
 --
 -- \brief A simplified UART function to drive TX characters on a UART board
 --        connection, independent of any RX function (presumed to be ingored).
---        Maximum baudrate is 115200; input clock is 7.37 MHz to support divison
+--        Maximum baudrate is 115200; input clock is 7.37 MHz to support division
 --        to modem clock rates.
 ------------------------------------------------------------------------------*/
 //------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ logic [3:0] s_i_aux;
 logic [7:0] s_data_val;
 logic [7:0] s_data_aux;
 
-// internal clock for 1x the baud rate
+// Internal clock enable for 1x the baud rate
 logic s_ce_baud_1x;
 
 // Mapping for FIFO TX
@@ -165,7 +165,7 @@ FIFO_DUALCLOCK_MACRO  #(
   .WREN(s_data_fifo_tx_we)                  // 1-bit input write enable
 );
 
-// End of FIFO_DUALCLOCK_MACRO_inst instantiation
+// End of u_fifo_uart_tx_0 instantiation
 
 
 // FSM register and auxiliary registers
