@@ -40,7 +40,7 @@ module pmod_cls_stand_spi_solo(
    o_tx_data, o_tx_enqueue, i_tx_ready,
    // RX FIFO interface to the \ref pmod_generic_spi_solo module.
    i_rx_data, o_rx_dequeue, i_rx_valid, i_rx_avail,
-   // FPGA system interface to CLS operation
+   // FPGA system interface for CLS operation
    o_command_ready,
    i_cmd_wr_clear_display,
    i_cmd_wr_text_line1,

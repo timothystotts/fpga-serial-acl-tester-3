@@ -49,7 +49,7 @@ module pmod_cls_stand_spi_solo
         input logic i_spi_ce_4x,
         // system and FIFO interface to the \ref pmod_generic_spi_solo module
         pmod_generic_spi_solo_intf.spi_sysdrv sdrv,
-        // FPGA system interface to CLS operation
+        // FPGA system interface for CLS operation
         output logic o_command_ready,
         input logic i_cmd_wr_clear_display,
         input logic i_cmd_wr_text_line1,

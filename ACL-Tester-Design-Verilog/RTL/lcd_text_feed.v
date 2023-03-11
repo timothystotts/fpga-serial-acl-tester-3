@@ -66,7 +66,7 @@ reg [(`c_lcd_update_fsm_bits - 1):0] s_lcd_upd_nx_state;
 // Write Line 1
 // Wait 1.0 milliseconds
 // Write Line 2
-// Wait 0.2 seconds
+// Wait 0.198 seconds
 // Repeat the above.
 `define c_lcd_update_timer_bits 24
 // The sub-second refresh is actually 1/5 of a second to have a 5 Hz refresh,
