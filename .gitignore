@@ -1,2 +1,4 @@
 .DS_Store
 
+vivado*.log
+vivado*.jou
