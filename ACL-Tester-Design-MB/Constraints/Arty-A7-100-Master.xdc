@@ -222,3 +222,15 @@ set_property CONFIG_MODE SPIx4 [current_design]
 
 set_property CONFIG_VOLTAGE 3.3 [current_design]
 set_property CFGBVS VCCO [current_design]
+
+# Not sure if these constraints are correct.
+# An Artix-7 100T has no backbone, correct? It's not an Ultrascale part.
+# If so, then CLOCK_DEDICATED_ROUTE should not be BACKBONE to the MIG.
+# See Xilinx article for workaround with old Vivado.
+# https://support.xilinx.com/s/article/60480?language=en_US
+# This issue also occurs in Vivado 2023.1.
+#
+set_property CLOCK_DEDICATED_ROUTE TRUE [get_nets -of [get_pins system_i/clk_wiz_0/inst/clk_out1]]
+set_property CLOCK_DEDICATED_ROUTE TRUE [get_nets -of [get_pins system_i/clk_wiz_0/inst/clk_out2]]
+
+set_clock_groups -asynchronous -group [get_clocks clk_out4_system_clk_wiz_0_0] -group [get_clocks clk_pll_i]
