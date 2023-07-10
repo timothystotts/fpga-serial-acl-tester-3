@@ -13,18 +13,18 @@
 #set_property -dict { PACKAGE_PIN M5    IOSTANDARD SSTL135 } [get_ports { ei_sw3 }]; #IO_L6N_T0_VREF_34 Sch=sw[3]
 
 ## RGB LEDs
-set_property -dict { PACKAGE_PIN J15   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[0] }]; #IO_L23N_T3_FWE_B_15 Sch=led0_r
-set_property -dict { PACKAGE_PIN G17   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[1] }]; #IO_L14N_T2_SRCC_15 Sch=led0_g
-set_property -dict { PACKAGE_PIN F15   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[2] }]; #IO_L13N_T2_MRCC_15 Sch=led0_b
-set_property -dict { PACKAGE_PIN E15   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[3] }]; #IO_L15N_T2_DQS_ADV_B_15 Sch=led1_r
-set_property -dict { PACKAGE_PIN F18   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[4] }]; #IO_L16P_T2_A28_15 Sch=led1_g
-set_property -dict { PACKAGE_PIN E14   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[5] }]; #IO_L15P_T2_DQS_15 Sch=led1_b
+#set_property -dict { PACKAGE_PIN J15   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[0] }]; #IO_L23N_T3_FWE_B_15 Sch=led0_r
+#set_property -dict { PACKAGE_PIN G17   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[1] }]; #IO_L14N_T2_SRCC_15 Sch=led0_g
+#set_property -dict { PACKAGE_PIN F15   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[2] }]; #IO_L13N_T2_MRCC_15 Sch=led0_b
+#set_property -dict { PACKAGE_PIN E15   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[3] }]; #IO_L15N_T2_DQS_ADV_B_15 Sch=led1_r
+#set_property -dict { PACKAGE_PIN F18   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[4] }]; #IO_L16P_T2_A28_15 Sch=led1_g
+#set_property -dict { PACKAGE_PIN E14   IOSTANDARD LVCMOS33 } [get_ports { led01_rgb[5] }]; #IO_L15P_T2_DQS_15 Sch=led1_b
 
 ## LEDs
-set_property -dict { PACKAGE_PIN E18   IOSTANDARD LVCMOS33 } [get_ports { led25[0] }]; #IO_L16N_T2_A27_15 Sch=led[2]
-set_property -dict { PACKAGE_PIN F13   IOSTANDARD LVCMOS33 } [get_ports { led25[1] }]; #IO_L17P_T2_A26_15 Sch=led[3]
-set_property -dict { PACKAGE_PIN E13   IOSTANDARD LVCMOS33 } [get_ports { led25[2] }]; #IO_L17N_T2_A25_15 Sch=led[4]
-set_property -dict { PACKAGE_PIN H15   IOSTANDARD LVCMOS33 } [get_ports { led25[3] }]; #IO_L18P_T2_A24_15 Sch=led[5]
+#set_property -dict { PACKAGE_PIN E18   IOSTANDARD LVCMOS33 } [get_ports { led25[0] }]; #IO_L16N_T2_A27_15 Sch=led[2]
+#set_property -dict { PACKAGE_PIN F13   IOSTANDARD LVCMOS33 } [get_ports { led25[1] }]; #IO_L17P_T2_A26_15 Sch=led[3]
+#set_property -dict { PACKAGE_PIN E13   IOSTANDARD LVCMOS33 } [get_ports { led25[2] }]; #IO_L17N_T2_A25_15 Sch=led[4]
+#set_property -dict { PACKAGE_PIN H15   IOSTANDARD LVCMOS33 } [get_ports { led25[3] }]; #IO_L18P_T2_A24_15 Sch=led[5]
 
 ## Buttons
 #set_property -dict { PACKAGE_PIN G15   IOSTANDARD LVCMOS33 } [get_ports { ei_btn0 }]; #IO_L18N_T2_A23_15 Sch=btn[0]
