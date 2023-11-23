@@ -237,7 +237,7 @@ function compile_work () {
         uart_tx_feed.vhdl \
         uart_tx_only.vhdl \
         \
-        fpga_serial_acl_tester.vhdl \
+        fpga_serial_acl_tester_a7100.vhdl \
         ; do
 
         ghdl_analyze 08 work "${SRC_DIR}/RTL/${filename}"

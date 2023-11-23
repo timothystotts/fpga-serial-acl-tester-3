@@ -46,7 +46,7 @@ entity fpga_serial_acl_tester_testbench is
 end entity fpga_serial_acl_tester_testbench;
 --------------------------------------------------------------------------------
 architecture simulation of fpga_serial_acl_tester_testbench is
-	component fpga_serial_acl_tester is
+	component fpga_serial_acl_tester_a7100 is
 		generic (
 			parm_fast_simulation : integer := 0);
 		port (
@@ -93,7 +93,7 @@ architecture simulation of fpga_serial_acl_tester_testbench is
 
 			eo_ssd_pmod0 : out std_logic_vector(7 downto 0)
 		);
-	end component fpga_serial_acl_tester;
+	end component fpga_serial_acl_tester_a7100;
 
 	component tbc_clock_gen is
 		generic(
@@ -282,8 +282,8 @@ begin
 		wait;
 	end process p_set_logfile;
 
-	-- Unit Under Test: fpga_serial_acl_tester
-	uut_fpga_serial_acl_tester : fpga_serial_acl_tester
+	-- Unit Under Test: fpga_serial_acl_tester_a7100
+	uut_fpga_serial_acl_tester : fpga_serial_acl_tester_a7100
 		generic map (
 			parm_fast_simulation => parm_fast_simulation)
 		port map (

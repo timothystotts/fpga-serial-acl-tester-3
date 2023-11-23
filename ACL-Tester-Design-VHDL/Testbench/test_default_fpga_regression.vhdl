@@ -45,8 +45,8 @@ configuration test_default_fpga_regression of fpga_serial_acl_tester_testharness
             );
 
             for simulation
-                for uut_fpga_serial_acl_tester : fpga_serial_acl_tester
-                    use entity work.fpga_serial_acl_tester(rtl);
+                for uut_fpga_serial_acl_tester : fpga_serial_acl_tester_a7100
+                    use entity work.fpga_serial_acl_tester_a7100(rtl);
                 end for;
 
                 -- select
