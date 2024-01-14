@@ -74,9 +74,7 @@ function ghdl_run_batch () {
 
 function compile_ossvm () {
     for filename in \
-	ResolutionPkg.vhd \
         NamePkg.vhd \
-	NameStorePkg.vhd \
         OsvvmGlobalPkg.vhd \
         \
         VendorCovApiPkg.vhd \
@@ -85,11 +83,10 @@ function compile_ossvm () {
         TextUtilPkg.vhd \
         AlertLogPkg.vhd \
         \
-        MessageListPkg.vhd \
+        MessagePkg.vhd \
         SortListPkg_int.vhd \
         RandomBasePkg.vhd \
         RandomPkg.vhd \
-	RandomProcedurePkg.vhd \
         CoveragePkg.vhd \
         MemoryPkg.vhd \
         \
@@ -97,11 +94,9 @@ function compile_ossvm () {
         ScoreboardPkg_slv.vhd \
         ScoreboardPkg_int.vhd \
         \
-	ResizePkg.vhd \
+        ResolutionPkg.vhd \
         TbUtilPkg.vhd \
         \
-	ReportPkg.vhd \
-	\
         OsvvmContext.vhd \
         ; do
 
@@ -117,8 +112,6 @@ function compile_ossvm_common () {
         AddressBusVersionCompatibilityPkg.vhd \
         ModelParametersPkg.vhd \
         FifoFillPkg_slv.vhd \
-	InterruptHandler.vhd \
-	InterruptHandlerComponentPkg.vhd \
         OsvvmCommonContext.vhd \
         ; do
 
@@ -126,19 +119,19 @@ function compile_ossvm_common () {
     done
 }
 
-function compile_ossvm_axi4_common () {
-    for filename in \
-        Axi4LiteInterfacePkg.vhd \
-        Axi4InterfacePkg.vhd \
-        Axi4CommonPkg.vhd \
-        Axi4ModelPkg.vhd \
-        Axi4OptionsTypePkg.vhd \
-        Axi4VersionCompatibilityPkg.vhd \
-        ; do
+# function compile_ossvm_axi4_common () {
+#     for filename in \
+#         Axi4LiteInterfacePkg.vhd \
+#         Axi4InterfacePkg.vhd \
+#         Axi4CommonPkg.vhd \
+#         Axi4ModelPkg.vhd \
+#         Axi4OptionsTypePkg.vhd \
+#         Axi4VersionCompatibilityPkg.vhd \
+#         ; do
 
-        ghdl_analyze 08 osvvm_axi4 "${SRC_DIR}/OSVVM/OsvvmLibraries/AXI4/common/src/${filename}"
-    done
-}
+#         ghdl_analyze 08 osvvm_axi4 "${SRC_DIR}/OSVVM/OsvvmLibraries/AXI4/common/src/${filename}"
+#     done
+# }
 
 # function compile_ossvm_axi4_axi4lite () {
 #     for filename in \
