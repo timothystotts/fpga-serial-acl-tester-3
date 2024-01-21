@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2021 Timothy Stotts
+-- Copyright (c) 2021,2024 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -267,10 +267,11 @@ begin
 		TranscriptOpen(parm_log_file_name, WRITE_MODE);
 		SetTranscriptMirror;
 		SetLogEnable(INFO, TRUE);
+		SetLogEnable(PASSED, TRUE);
 		SetLogEnable(DEBUG, FALSE);
 
 		Print("FPGA_SERIAL_ACL_TESTER_TESTBENCH starting simulation.");
-		Print("Logging enabled for ALWAYS, INFO, DEBUG.");
+		Print("Logging enabled for ALWAYS, INFO, PASSED.");
 
 		wait for 1 ns;
 		WaitForBarrier(s_barrier_log_start);

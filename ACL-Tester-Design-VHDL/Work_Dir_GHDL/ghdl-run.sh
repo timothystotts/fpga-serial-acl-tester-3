@@ -27,23 +27,51 @@ if [[ -z ${SRC_DIR} ]]; then
     SRC_DIR=".."
 fi
 
+# Idea borrowed from:
+# https://wiki.gentoo.org/wiki/Safe_CFLAGS
+#
+# For example for AMD Ryzen 7 PRO
+# in ~/.bashrc
+# export NATIVE_CFLAGS="-O2 -march=znver3 -mshstk --param=l1-cache-line-size=64 --param=l1-cache-size=32 --param=l2-cache-size=512"
+if [[ -n ${NATIVE_CFLAGS} ]]; then
+    GFLAGS="-O2"
+    for flag in ${NATIVE_CFLAGS}; do
+        GFLAGS="$GFLAGS -Wc,$flag"
+        if [[ ${flag} != ${flag#-march} ]]; then
+            GFLAGS="$GFLAGS -Wa,${flag}"
+            GFLAGS="$GFLAGS -Wl,${flag}"
+        fi
+        if [[ ${flag} = -mshstk ]]; then
+            GFLAGS="$GFLAGS -Wl,${flag}"
+        fi
+        if [[ ${flag} != ${flag#--param=} ]]; then
+            GFLAGS="$GFLAGS -Wl,${flag}"
+        fi
+    done
+    export GFLAGS
+else
+    export GFLAGS="-O2"
+fi
+
 function clean_work_dir () {
     rm -f *.o
     rm -f work-obj08.cf osvvm-obj08.cf osvvm_common-obj08.cf osvvm_axi4-obj08.cf osvvm_uart-obj08.cf
     rm -f fpga_serial_acl_tester_tb
     rm -f fpga_serial_acl_tester_testharness
+    rm -f test_default_fpga_regression
+    [[ -f log_test_default_fpga_regression.txt ]] && mv log_test_default_fpga_regression.txt old-log_test_default_fpga_regression.txt
 }
 
 function ghdl_analyze () {
     # std , worklib, path
-    echo "ghdl -a --std=${1} --work=${2} -O2 ${3}"
-    ghdl -a --std=${1} --work=${2} -O2 "${3}" || exit 1
+    echo "ghdl -a --std=${1} --work=${2} ${GFLAGS} ${3}"
+    ghdl -a --std=${1} --work=${2} ${GFLAGS} "${3}" || exit 1
 }
 
 function ghdl_elaborate () {
     # std, work unit
-    echo "ghdl -e --std=08 -fsynopsys -frelaxed -O2 ${2}"
-    ghdl -e --std=${1} -fsynopsys -frelaxed -O2 ${2} || exit 1
+    echo "ghdl -e --std=08 -fsynopsys -frelaxed ${GFLAGS} ${2}"
+    ghdl -e --std=${1} -fsynopsys -frelaxed ${GFLAGS} ${2} || exit 1
 }
 
 function ghdl_generate_optlist () {

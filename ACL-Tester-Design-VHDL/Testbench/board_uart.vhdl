@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2021 Timothy Stotts
+-- Copyright (c) 2021,2024 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -96,6 +96,9 @@ begin
 		-- Variable for querying the ScoreBoard FIFO position of the matching
 		-- data \ref v_slv_expect .
 		variable v_expect_idx : integer;
+        -- A variable to track how many times has \ref v_slv_expect been all
+        -- undefined.
+        variable times_all_undef : natural := 0;
 	begin
 		wait for 0 ns;
 		WaitForBarrier(BarrierLogStart);
@@ -139,16 +142,34 @@ begin
 					-- at a less frequent interval that the Pmod ACL2 filter
 					-- rate. Thus, find the match and drop all preceding values.
 					v_expect_idx := SB_UART.Find(v_slv_expect);
-					Log(ModelID, "BOARD UART text line matched ScoreBoard history: " & to_string(v_expect_idx), INFO);
+					if (v_expect_idx /= integer'left) then
+						Log(ModelID, "BOARD UART text line matched ScoreBoard history: " & to_string(v_expect_idx) & " (" & to_hstring(v_slv_expect) & ")", PASSED);
+					else
+						Alert(ModelID, "BOARD UART text line mismatched ScoreBoard history: " & to_string(v_expect_idx) & " (" & to_hstring(v_slv_expect) & ")", ERROR);
+					end if;
 					SB_UART.Flush(v_expect_idx);
 				else
-					-- If \ref v_slv_expect is all "U" bits, then this ASCII
-					-- line was something other than raw register values. Thus,
-					-- do not test it with the ScoreBoard, but alert with a
-					-- warning.
-					Alert(ModelID, "BOARD UART text line not tested with " &
-						"ScoreBoard history.",
-						WARNING);
+                    if (times_all_undef < natural'high) then
+                        times_all_undef := times_all_undef + 1;
+                    end if;
+
+                    if (times_all_undef > 1) then
+						-- If \ref v_slv_expect is all "U" bits, then this ASCII
+						-- line was something other than raw register values. Thus,
+						-- do not test it with the ScoreBoard, but alert with a
+						-- warning.
+						Alert(ModelID, "BOARD UART text line not tested with " &
+							"ScoreBoard history due to invalid data.",
+							WARNING);
+					else
+						-- If \ref v_slv_expect is all "U" bits, then this ASCII
+						-- line was something other than raw register values. Thus,
+						-- do not test it with the ScoreBoard, but alert with a
+						-- note.
+						Log(ModelID, "BOARD UART text line not tested with " &
+							"ScoreBoard history due to invalid data (assumed start up).",
+							INFO);
+					end if;
 				end if;
 
 				-- Reset data tracking in preparation of receiving next text

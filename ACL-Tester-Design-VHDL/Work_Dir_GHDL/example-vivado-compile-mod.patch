@@ -1,0 +1,21 @@
+--- /opt/ghdl-git-gcc/lib/ghdl/vendors/shared.sh.bkup.1	2024-01-21 16:02:54.799672380 -0500
++++ /opt/ghdl-git-gcc/lib/ghdl/vendors/shared.sh	2024-01-21 18:12:09.806143365 -0500
+@@ -50,6 +50,18 @@
+ Analyze_Filter=filter.analyze.sh
+ Analyze_Parameters=(
+ 	--mb-comments
++	-O2
++	-Wc,-march=znver3
++	-Wa,-march=znver3
++	-Wl,-march=znver3
++	-Wc,-mshstk
++	-Wl,-mshstk
++	-Wc,--param=l1-cache-line-size=64
++	-Wl,--param=l1-cache-line-size=64
++	-Wc,--param=l1-cache-size=32
++	-Wl,--param=l1-cache-size=32
++	-Wc,--param=l2-cache-size=512
++	-Wl,--param=l2-cache-size=512
+ )
+ 
+ VERBOSE=${VERBOSE:-0}

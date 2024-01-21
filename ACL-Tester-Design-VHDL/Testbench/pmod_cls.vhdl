@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- MIT License
 --
--- Copyright (c) 2021 Timothy Stotts
+-- Copyright (c) 2021,2024 Timothy Stotts
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -192,6 +192,9 @@ begin
         -- the \ref scored_receipt if the \ref input_buffer contains no
         -- hexadecimal ASCII bytes.
         constant c_all_undef : std_logic_vector(63 downto 0) := (others => 'U');
+        -- A variable to track how many times has \ref scored_recipt been all
+        -- undefined.
+        variable times_all_undef : natural := 0;
     begin
         wait for 0 ns;
         WaitForBarrier(BarrierLogStart);
@@ -284,18 +287,40 @@ begin
                             -- parsed from the 32 bytes of ASCII text. The
                             -- real data is searched for in the ScoreBoard.
                             found_pos := SB_CLS.Find(scored_receipt);
-                            Log(ModelID,
-                                "PMOD CLS Text lines matched ScoreBoard " &
-                                "history: " & to_string(found_pos),
-                                INFO);
+                            if (found_pos /= integer'left) then
+                                Log(ModelID,
+                                    "PMOD CLS Text lines matched ScoreBoard " &
+                                    "history: " & to_string(found_pos) &
+                                    " (" & to_hstring(scored_receipt) & ")",
+                                    PASSED);
+                            else
+                                Alert(ModelID,
+                                    "PMOD CLS Text lines mismatched ScoreBoard " &
+                                    "history: " & to_string(found_pos) &
+                                    " (" & to_hstring(scored_receipt) & ")",
+                                    ERROR);
+                            end if;
                             SB_CLS.Flush(found_pos);
                         else
-                            -- The \ref scored_receipt does not contain real
-                            -- data as the two ASCII lines did not display
-                            -- the raw register value 16 hexadecimal characters.
-                            Alert(ModelID, "PMOD CLS text lines not tested " &
-                                "with ScoreBoard history.",
-                                WARNING);
+                            if (times_all_undef < natural'high) then
+                                times_all_undef := times_all_undef + 1;
+                            end if;
+
+                            if (times_all_undef > 1) then
+                                -- The \ref scored_receipt does not contain real
+                                -- data as the two ASCII lines did not display
+                                -- the raw register value 16 hexadecimal characters.
+                                Alert(ModelID, "PMOD CLS text lines not tested " &
+                                    "with ScoreBoard history due to invalid data.",
+                                    WARNING);
+                            else
+                                -- The \ref scored_receipt does not contain real
+                                -- data as the two ASCII lines did not display
+                                -- the raw register value 16 hexadecimal characters.
+                                Log(ModelID, "PMOD CLS text lines not tested " &
+                                    "with ScoreBoard history due to invalid data (assumed start up).",
+                                    INFO);
+                            end if;
                         end if;
                     end if;
                 end if;
