@@ -1,5 +1,5 @@
---- /opt/ghdl-git-gcc/lib/ghdl/vendors/shared.sh.bkup.1	2024-01-21 16:02:54.799672380 -0500
-+++ /opt/ghdl-git-gcc/lib/ghdl/vendors/shared.sh	2024-01-21 18:12:09.806143365 -0500
+--- /opt/ghdl-gcc-4.1.0/lib/ghdl/vendors/shared.sh.bkup.1	2024-01-21 16:02:54.799672380 -0500
++++ /opt/ghdl-gcc-4.1.0/lib/ghdl/vendors/shared.sh	2024-01-21 18:12:09.806143365 -0500
 @@ -50,6 +50,18 @@
  Analyze_Filter=filter.analyze.sh
  Analyze_Parameters=(
