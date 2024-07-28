@@ -20,9 +20,11 @@ Note that clerical corrections were completed in branch `bugs/various_defects`
 and merged to branch `main`. These corrections include updates to comments,
 commenting style, and whitespace.
 
-Note also that the photos of Arty S7-25 assembly currently show PMOD ACL2 at JB and PMOD
-CLS at JA; but the three RTL code projects have the PMOD ACL2 at JA and the PMOD CLS at JB.
-This discrepancy will be remedied at a later time.
+Notes:
+- The photos of Arty S7-25 assembly currently show PMOD ACL2 at JB and PMOD CLS at JA; but the three RTL code projects have the PMOD ACL2 at JA and the PMOD CLS at JB. This discrepancy will be remedied at a later time.
+- The MicroBlaze example followed this tutorial as a starting point:
+- [https://digilent.com/reference/learn/programmable-logic/tutorials/arty-getting-started-with-microblaze-servers/start](https://digilent.com/reference/learn/programmable-logic/tutorials/arty-getting-started-with-microblaze-servers/start)
+- Note that the MicroBlaze example requires Xilinx Vivado 2021.2. The DDR MIG is driven by two MMCM clocks in a way that is possibly incompatible with newer versions of Vivado. Newer versions of Vivado may require a revised block design to achieve a functional design.
 
 ## Description
 A small FPGA project of different implementations for testing Measurement and Activity Events of a SPI accelerometer.
