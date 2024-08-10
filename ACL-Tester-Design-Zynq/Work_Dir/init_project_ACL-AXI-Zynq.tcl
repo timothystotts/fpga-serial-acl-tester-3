@@ -292,8 +292,8 @@ if { $obj != "" } {
 
 }
 set obj [get_runs synth_1]
-set_property -name "auto_incremental_checkpoint" -value "1" -objects $obj
-set_property -name "auto_incremental_checkpoint.directory" -value "W:/wa/fpga-serial-acl-tester-3/ACL-Tester-Design-Zynq/ACL-AXI-Zynq/ACL-AXI-Zynq.srcs/utils_1/imports/synth_1" -objects $obj
+set_property -name "auto_incremental_checkpoint" -value "0" -objects $obj
+#set_property -name "auto_incremental_checkpoint.directory" -value "W:/wa/fpga-serial-acl-tester-3/ACL-Tester-Design-Zynq/ACL-AXI-Zynq/ACL-AXI-Zynq.srcs/utils_1/imports/synth_1" -objects $obj
 set_property -name "strategy" -value "Vivado Synthesis Defaults" -objects $obj
 
 # set the current synth run
