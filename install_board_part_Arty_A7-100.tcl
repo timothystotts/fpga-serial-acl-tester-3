@@ -1,7 +1,7 @@
 # Install the board part for Arty A7-100
 
-# You will need to replace the path portion /timot/ with your own user login path under C:/Users/
-set_param board.repoPaths {C:/Users/username/AppData/Roaming/Xilinx/Vivado/2021.2/xhub/board_store/xilinx_board_store}
+# You will need to replace the path portion /username/ with your own user login path under C:/Users/
+#set_param board.repoPaths {C:/Users/username/AppData/Roaming/Xilinx/Vivado/2021.2/xhub/board_store/xilinx_board_store}
 set_param board.repoPaths {/home/username/.Xilinx/Vivado/2021.2/xhub/board_store/xilinx_board_store}
 xhub::refresh_catalog [xhub::get_xstores xilinx_board_store]
 
